@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexCrossword", "RegexCrossword\RegexCrossword.csproj", "{73B917B7-7C1F-48E9-816D-69C6A05D7885}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegexCrosswordTests", "RegexCrosswordTests\RegexCrosswordTests.csproj", "{90483FE2-02C8-4238-B011-0A744F238E34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73B917B7-7C1F-48E9-816D-69C6A05D7885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B917B7-7C1F-48E9-816D-69C6A05D7885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B917B7-7C1F-48E9-816D-69C6A05D7885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B917B7-7C1F-48E9-816D-69C6A05D7885}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90483FE2-02C8-4238-B011-0A744F238E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90483FE2-02C8-4238-B011-0A744F238E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90483FE2-02C8-4238-B011-0A744F238E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90483FE2-02C8-4238-B011-0A744F238E34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

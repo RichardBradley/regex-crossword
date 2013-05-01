@@ -1,0 +1,28 @@
+h1. Regex crossword
+
+This is the first in a series of blog posts exploring the Regex Crossword by qq which swept the internet recently.
+
+It's a good opportunity to have an in depth look at regular expressions and finite automata. By the end of the series, we will have written a program to solve the crossword (and perhaps to generate new crosswords in a similar style).
+
+h1. How to solve it
+
+The puzzle is a classic "constraint propagation" challenge -- the most straightforward way to solve it is to keep track of what possible letters are allowed in each square, and to iteratively re-apply each of the constraints until only one possibility remains in each square.
+
+Take the top left hex, as an example: it is constrained by three regexes:
+ 1. It is the start letter for ".*H.*H.*"
+ 2. It is the start letter for "(ND|ET|IN)[^X]*"
+ 3. It is the end letter for ".*(IN|SE|HI)"
+
+Now (1) doesn't constrain us at all, but (2) shows it must be N, E or I, and (3) shows the same.
+
+To make our solver, we will need:
+ 1. A way to track which letter remain a possibility for each hex
+ 2. A way to derive these constraints, given a regex
+
+Let's start with (2).
+
+h1. Generating possible inputs from a regex
+
+A "regex" or "regular expression" is a finite state machine. It can be used as both a "matcher", to evaulate whether a given input is acceptable to the state machine and conversely as a "generator".
+
+To do this, we'll need a way to apply 

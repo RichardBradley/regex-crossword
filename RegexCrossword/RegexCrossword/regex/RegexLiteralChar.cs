@@ -28,9 +28,9 @@ namespace RegexCrossword.regex
       return Ch.GetHashCode();
     }
 
-    public bool AddPossibilitiesSeen(int idx, CharSet[] currentConstraints, CharSet[] possibilitiesSeen, IEnumerator<RegexAtom> nextEnum)
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
     {
-      if (idx)
+      throw new System.NotImplementedException();
     }
 
     public override string ToString()

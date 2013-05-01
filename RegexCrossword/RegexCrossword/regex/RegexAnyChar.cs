@@ -17,5 +17,10 @@ namespace RegexCrossword.regex
     {
       return 97;
     }
+
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

@@ -8,5 +8,9 @@ namespace RegexCrossword.regex
 {
   class RegexEndOfLine : RegexAtom
   {
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

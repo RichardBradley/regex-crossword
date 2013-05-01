@@ -28,13 +28,15 @@ namespace RegexCrossword.regex
             context.Push(new RegexCapturingGroupChoices());
             break;
           case ')':
-            if (!(context.Peek() is RegexCapturingGroupChoices))
             {
-              throw new ParseException(reader, "No open CapturingGroup");
+              if (!(context.Peek() is RegexCapturingGroupChoices))
+              {
+                throw new ParseException(reader, "No open CapturingGroup");
+              }
+              var group = (RegexCapturingGroupChoices)context.Pop();
+              ((RegexAtomList) context.Peek()).Add(group);
+              break;
             }
-            var group = context.Pop();
-            ((RegexAtomList)context.Peek()).Add(group);
-            break;
           case '[':
             context.Push(new RegexCharset());
             break;
@@ -43,13 +45,13 @@ namespace RegexCrossword.regex
             {
               throw new ParseException(reader, "No open RegexCharset");
             }
-            var charset = context.Pop();
+            var charset = (RegexCharset)context.Pop();
             ((RegexAtomList)context.Peek()).Add(charset);
             break;
           case '^':
             if (context.Peek() is RegexCharset && ((RegexCharset)context.Peek()).Count == 0)
             {
-              ((RegexCharset) context.Peek()).IsInverse = true;
+              ((RegexCharset)context.Peek()).IsInclusive = false;
             }
             else
             {
@@ -94,7 +96,7 @@ namespace RegexCrossword.regex
           default:
             if (ch < 'A' || ch > 'Z')
             {
-              throw new ParseException(reader, "Expecting A-Z, found " + ch);
+              throw new ParseException(reader, "Expecting A-Z, found '" + (char)ch + "'");
             }
             if (context.Peek() is RegexCharset)
             {
@@ -142,27 +144,22 @@ namespace RegexCrossword.regex
     /// 
     /// Returns true if any changes were made.
     /// </summary>
-    public bool AddConstraints(CharSet[] currentConstraints)
+    public bool AddConstraints(CharSetString currentConstraints)
     {
-      var possibilitiesSeen = CharSet.UnconstrainedStringOfLength(currentConstraints.Length);
-
       var atomsEnum = Atoms.GetEnumerator();
       if (!atomsEnum.MoveNext())
       {
         throw new Exception("empty regex");
       }
       var first = atomsEnum.Current;
-      first.AddPossibilitiesSeen(0, currentConstraints, possibilitiesSeen, atomsEnum);
 
-      var changesMade = false;
-      for (int i = 0; i < currentConstraints.Length; i++)
+      var possibilitiesSeen = CharSetString.UnconstrainedStringOfLength(currentConstraints.Length);
+      foreach (var possibility in first.GeneratePossibleMatches(0, currentConstraints, atomsEnum))
       {
-        var currentConstraint = currentConstraints[i];
-        var possibilitySeen = possibilitiesSeen[i];
-
-        changesMade |= currentConstraint.IntersectWith(possibilitySeen);
+        possibilitiesSeen.Union(possibility);
       }
-      return changesMade;
+
+      return currentConstraints.Intersect(possibilitiesSeen);
     }
   }
 }

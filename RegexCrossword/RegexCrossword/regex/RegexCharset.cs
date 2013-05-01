@@ -1,50 +1,64 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RegexCrossword.regex
 {
   public class RegexCharset : RegexAtom
   {
-    public bool IsInverse = false;
-    public List<char> Chars = new List<char>();
+    public CharSet CharSet;
 
+    /// <summary>
+    /// Creates a new "inclusive" charset.
+    /// 
+    /// If chars[] is empty, then no char will match
+    /// </summary>
+    /// <param name="chars"></param>
     public RegexCharset(params char[] chars)
     {
-      Chars.AddRange(chars);
+      CharSet = CharSet.OneOf(chars);
     }
 
+    /// <summary>
+    /// Adds a char.
+    /// If the CharSet is inclusive, then this will be a new possible char;
+    /// if it is exclusive, then this will be a new exclusion.
+    /// </summary>
     public void AddChar(char ch)
     {
-      Chars.Add(ch);
+      CharSet.AddChar(ch);
     }
 
     public int Count
     {
-      get
-      {
-        return Chars.Count;
-      }
+      get { return CharSet.Count; }
+    }
+
+    public bool IsInclusive
+    {
+      get { return CharSet.IsInclusive; }
+      set { CharSet.IsInclusive = value; }
     }
 
     public override bool Equals(object obj)
     {
       return obj.GetType() == GetType()
-             && ((RegexCharset)obj).IsInverse == IsInverse
-             && ((RegexCharset)obj).Chars.SequenceEqual(Chars);
+             && ((RegexCharset)obj).CharSet.Equals(CharSet);
     }
 
     public override int GetHashCode()
     {
-      return 13 * IsInverse.GetHashCode() + Chars.GetHashCode();
+      return 13 * CharSet.GetHashCode();
+    }
+
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    {
+      throw new System.NotImplementedException();
     }
 
     public override string ToString()
     {
-      return string.Format("{0}[{1}{2}]",
-        GetType(), IsInverse ? "^" : "", string.Join("", Chars));
+      return string.Format("{0}[{1}]",
+        GetType(), CharSet);
     }
   }
 }

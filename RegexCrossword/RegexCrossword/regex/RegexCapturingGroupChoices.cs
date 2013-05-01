@@ -6,7 +6,7 @@ namespace RegexCrossword.regex
   /// <summary>
   /// Both a capturing group and a choice list, e.g. "(a|b)"
   /// </summary>
-  public class RegexCapturingGroupChoices : RegexAtomList, RegexAtom, RegexParseContext
+  public class RegexCapturingGroupChoices : RegexAtomList, RegexAtom
   {
     public List<List<RegexAtom>> Choices;
 
@@ -38,6 +38,11 @@ namespace RegexCrossword.regex
     public override int GetHashCode()
     {
       return Choices.GetHashCode();
+    }
+
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    {
+      throw new System.NotImplementedException();
     }
 
     public override string ToString()

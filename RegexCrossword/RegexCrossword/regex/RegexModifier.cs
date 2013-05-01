@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace RegexCrossword.regex
 {
   public abstract class RegexModifier : RegexAtom
@@ -19,6 +21,11 @@ namespace RegexCrossword.regex
     public override int GetHashCode()
     {
       return 17*Inner.GetHashCode();
+    }
+
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    {
+      throw new System.NotImplementedException();
     }
 
     public override string ToString()

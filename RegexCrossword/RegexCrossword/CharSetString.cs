@@ -116,11 +116,7 @@ namespace RegexCrossword
       var charSets = new List<CharSet>();
       foreach (var atom in regex.Atoms)
       {
-        if (atom is RegexAnyChar)
-        {
-          charSets.Add(new CharSet());
-        }
-        else if (atom is RegexCharset)
+        if (atom is RegexCharset)
         {
           charSets.Add(((RegexCharset)atom).CharSet);
         }

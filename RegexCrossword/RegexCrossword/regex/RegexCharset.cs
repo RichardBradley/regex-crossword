@@ -18,6 +18,11 @@ namespace RegexCrossword.regex
       CharSet = CharSet.OneOf(chars);
     }
 
+    public static RegexAtom AnyChar()
+    {
+      return new RegexCharset {IsInclusive = false};
+    }
+
     /// <summary>
     /// Adds a char.
     /// If the CharSet is inclusive, then this will be a new possible char;

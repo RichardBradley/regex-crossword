@@ -48,7 +48,7 @@ namespace RegexCrosswordTests.regex
       var regex = new Regex("X+Y+Z+");
       var str = CharSetString.UnconstrainedStringOfLength(5);
       Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("X[XY][XYZ][YZ][Z]", str.ToString());
+      Assert.AreEqual("X[XY][XYZ][YZ]Z", str.ToString());
 
       str = CharSetString.Parse("...X..");
       Assert.IsTrue(regex.AddConstraints(str));
@@ -74,11 +74,11 @@ namespace RegexCrosswordTests.regex
     {
       Assert.AreEqual(
         new Regex(
-          new RegexZeroOrMore(new RegexAnyChar()),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar()),
           new RegexLiteralChar('H'),
-          new RegexZeroOrMore(new RegexAnyChar()),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar()),
           new RegexLiteralChar('H'),
-          new RegexZeroOrMore(new RegexAnyChar())),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar())),
         new Regex(".*H.*H.*"));
 
       Assert.AreEqual(
@@ -87,18 +87,18 @@ namespace RegexCrosswordTests.regex
             RegexLiteralChar.ForString("ND"),
             RegexLiteralChar.ForString("ET"),
             RegexLiteralChar.ForString("IN")),
-          new RegexZeroOrMore(
-            new RegexCharset('X') { IsInclusive = false })),
+          new RegexRepetitionModifier(
+            new RegexCharset('X') { IsInclusive = false }, 0, null)),
         new Regex("(ND|ET|IN)[^X]*"));
 
       Assert.AreEqual(
         new Regex(
           new RegexLiteralChar('F'),
-          new RegexZeroOrMore(new RegexAnyChar()),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar()),
           new RegexCharset('A', 'O'),
-          new RegexZeroOrMore(new RegexAnyChar()),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar()),
           new RegexCharset('A', 'O'),
-          new RegexZeroOrMore(new RegexAnyChar())),
+          RegexRepetitionModifier.ZeroOrMore(RegexCharset.AnyChar())),
         new Regex("F.*[AO].*[AO].*"));
     }
   }

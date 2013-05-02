@@ -65,21 +65,21 @@ namespace RegexCrossword.regex
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexMaybe((RegexNonTerminalAtom) last));
+              ((RegexAtomList)context.Peek()).Add(RegexRepetitionModifier.Maybe(last));
               break;
             }
           case '*':
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexZeroOrMore((RegexNonTerminalAtom) last));
+              ((RegexAtomList)context.Peek()).Add(RegexRepetitionModifier.ZeroOrMore(last));
               break;
             }
           case '+':
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexOneOrMore((RegexNonTerminalAtom) last));
+              ((RegexAtomList)context.Peek()).Add(RegexRepetitionModifier.OneOrMore(last));
               break;
             }
           case '|':
@@ -92,7 +92,7 @@ namespace RegexCrossword.regex
               break;
             }
           case '.':
-            ((RegexAtomList)context.Peek()).Add(new RegexAnyChar());
+            ((RegexAtomList)context.Peek()).Add(RegexCharset.AnyChar());
             break;
           case '\\':
             throw new NotImplementedException("TODO");
@@ -112,7 +112,6 @@ namespace RegexCrossword.regex
             break;
         }
       } while (ch != -1);
-
       
       if (context.Peek() != this)
       {

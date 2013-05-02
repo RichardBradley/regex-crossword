@@ -48,7 +48,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="regex\RegexEmptyMatchTerminalAtom.cs" />
-    <Compile Include="regex\RegexAnyChar.cs" />
     <Compile Include="regex\Regex.cs" />
     <Compile Include="regex\RegexAtom.cs" />
     <Compile Include="regex\RegexAtomList.cs" />
@@ -56,11 +55,8 @@
     <Compile Include="regex\RegexCapturingGroupChoices.cs" />
     <Compile Include="regex\RegexEndOfLine.cs" />
     <Compile Include="regex\RegexLiteralChar.cs" />
-    <Compile Include="regex\RegexMaybe.cs" />
-    <Compile Include="regex\RegexModifier.cs" />
+    <Compile Include="regex\RegexRepetitionModifier.cs" />
     <Compile Include="regex\RegexNonTerminalAtom.cs" />
-    <Compile Include="regex\RegexOneOrMore.cs" />
-    <Compile Include="regex\RegexZeroOrMore.cs" />
     <Compile Include="SortedSetExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

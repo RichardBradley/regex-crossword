@@ -7,7 +7,7 @@ namespace RegexCrossword.regex
   {
     private RegexAtom _next;
 
-    public virtual RegexAtom Next
+    public RegexAtom Next
     {
       get
       {

@@ -10,15 +10,6 @@ namespace RegexCrossword.regex
     {
     }
 
-    public override RegexAtom Next
-    {
-      set
-      {
-        base.Next = value;
-        Inner.Next = value;
-      }
-    }
-
     /// <summary>
     /// Yields each of the possible matches of the regex from this point onwards as a CharSetString.
     /// </summary>

@@ -2,14 +2,14 @@
 
 namespace RegexCrossword.regex
 {
-  public class RegexEndOfLine : RegexAtom
+  /// <summary>
+  /// A regex atom which always matches the empty string
+  /// </summary>
+  public class RegexEmptyMatchTerminalAtom : RegexAtom
   {
     public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      if (charIdx == currentConstraints.Length)
-      {
-        yield return CharSetString.EmptyString();
-      }
+      return new[] { CharSetString.EmptyString() };
     }
 
     public override bool Equals(object obj)
@@ -19,7 +19,7 @@ namespace RegexCrossword.regex
 
     public override int GetHashCode()
     {
-      return 987;
+      return 937;
     }
   }
 }

@@ -125,6 +125,7 @@ namespace RegexCrossword.regex
     public Regex(params RegexAtom[] atoms)
     {
       Atoms.AddRange(atoms);
+      FinishParse();
     }
 
     public class ParseException : Exception
@@ -188,6 +189,17 @@ namespace RegexCrossword.regex
     public override string ToString()
     {
       return string.Format("{0}[{1}]", GetType(), string.Join(", ", Atoms));
+    }
+
+    public override bool Equals(object obj)
+    {
+      return obj.GetType() == GetType()
+             && Atoms.SequenceEqual(((Regex) obj).Atoms);
+    }
+
+    public override int GetHashCode()
+    {
+      return 143;
     }
   }
 }

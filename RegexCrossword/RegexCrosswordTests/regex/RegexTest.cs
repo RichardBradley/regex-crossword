@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RegexCrossword;
 using RegexCrossword.regex;
 
@@ -44,13 +43,30 @@ namespace RegexCrosswordTests.regex
     }
 
     [TestMethod]
+    public void TestAddConstraints4()
+    {
+      var regex = new Regex("X+Y+Z+");
+      var str = CharSetString.UnconstrainedStringOfLength(5);
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("X[XY][XYZ][YZ][Z]", str.ToString());
+
+      str = CharSetString.Parse("...X..");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("XXXXYZ", str.ToString());
+
+      str = CharSetString.Parse("..Z..");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("XYZZZ", str.ToString());
+    }
+
+    [TestMethod]
     public void TestOrConstraint()
     {
       var regex = new Regex("(ND|ET|IN)[^X]*");
       var str = CharSetString.UnconstrainedStringOfLength(7);
       Assert.IsTrue(regex.AddConstraints(str));
 
-      Assert.AreEqual("[NEI][DTN][^X][^X][^X][^X][^X]", str.ToString());
+      Assert.AreEqual("[EIN][DNT][^X][^X][^X][^X][^X]", str.ToString());
     }
 
     [TestMethod]

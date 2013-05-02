@@ -124,9 +124,9 @@ namespace RegexCrossword
         {
           charSets.Add(((RegexCharset)atom).CharSet);
         }
-        else if (atom is RegexLiteralChar)
+        else if (atom is RegexEndOfLine)
         {
-          charSets.Add(CharSet.OneOf(((RegexLiteralChar)atom).Ch));
+          // ignore
         }
         else
         {

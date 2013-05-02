@@ -61,8 +61,19 @@ namespace RegexCrossword.regex
     /// </param>
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
+      if (charIdx >= currentConstraints.Length)
+      {
+        yield break; // no match
+      }
       var thisCharSet = currentConstraints[charIdx].Clone();
-      thisCharSet.Intersect(CharSet);
+      try
+      {
+        thisCharSet.Intersect(CharSet);
+      }
+      catch (CharSet.EmptyIntersectionException)
+      {
+        yield break; // no match
+      }
 
       foreach (var remainderMatch in Next.GeneratePossibleMatches(charIdx + 1, currentConstraints))
       {

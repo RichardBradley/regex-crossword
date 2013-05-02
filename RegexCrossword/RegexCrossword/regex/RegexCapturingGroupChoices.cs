@@ -18,6 +18,7 @@ namespace RegexCrossword.regex
     public RegexCapturingGroupChoices(params List<RegexAtom>[] choices)
     {
       Choices = new List<List<RegexAtom>>(choices);
+      FinishParse();
     }
 
     public void Add(RegexAtom atom)
@@ -92,22 +93,11 @@ namespace RegexCrossword.regex
     {
       foreach (var choice in Choices)
       {
-        choice.Add(new EmptyMatchTerminalRegexAtom());
+        choice.Add(new RegexEmptyMatchTerminalAtom());
         for (int i = 0; i < choice.Count - 1; i++)
         {
           ((RegexNonTerminalAtom)choice[i]).Next = choice[i + 1];
         }
-      }
-    }
-
-    /// <summary>
-    /// A regex atom which always matches the empty string, to terminate each child choice
-    /// </summary>
-    private class EmptyMatchTerminalRegexAtom : RegexAtom
-    {
-      public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
-      {
-        return new[] { CharSetString.EmptyString() };
       }
     }
   }

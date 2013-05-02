@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RegexCrossword;
 using RegexCrossword.regex;
 
@@ -8,19 +9,48 @@ namespace RegexCrosswordTests.regex
   public class RegexTest
   {
     [TestMethod]
+    public void TestAddConstraints1()
+    {
+      var regex = new Regex("X*");
+      var str = CharSetString.UnconstrainedStringOfLength(7);
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("XXXXXXX", str.ToString());
+    }
+
+    [TestMethod]
+    public void TestAddConstraints2()
+    {
+      var regex = new Regex("X*YX*");
+      var str = CharSetString.UnconstrainedStringOfLength(7);
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("[XY][XY][XY][XY][XY][XY][XY]", str.ToString());
+
+      str = CharSetString.Parse("..Y....");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("XXYXXXX", str.ToString());
+
+      str = CharSetString.Parse("..Y");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("XXY", str.ToString());
+    }
+
+    [TestMethod]
+    public void TestAddConstraints3()
+    {
+      var regex = new Regex("(A|BC|DEF)(GHI|JK|L)");
+      var str = CharSetString.UnconstrainedStringOfLength(4);
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("[ABD][CEG][FHJ][IKL]", str.ToString());
+    }
+
+    [TestMethod]
     public void TestOrConstraint()
     {
       var regex = new Regex("(ND|ET|IN)[^X]*");
       var str = CharSetString.UnconstrainedStringOfLength(7);
       Assert.IsTrue(regex.AddConstraints(str));
 
-      Assert.AreEqual(CharSet.OneOf('N', 'E', 'I'), str[0]);
-      Assert.AreEqual(CharSet.OneOf('D', 'T', 'N'), str[1]);
-      Assert.AreEqual(CharSet.AnyExcept('X'), str[2]);
-      Assert.AreEqual(CharSet.AnyExcept('X'), str[3]);
-      Assert.AreEqual(CharSet.AnyExcept('X'), str[4]);
-      Assert.AreEqual(CharSet.AnyExcept('X'), str[5]);
-      Assert.AreEqual(CharSet.AnyExcept('X'), str[6]);
+      Assert.AreEqual("[NEI][DTN][^X][^X][^X][^X][^X]", str.ToString());
     }
 
     [TestMethod]

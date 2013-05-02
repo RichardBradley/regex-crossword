@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace RegexCrossword.regex
 {
-  public class RegexLiteralChar : RegexAtom
+  public class RegexLiteralChar : RegexNonTerminalAtom
   {
     public readonly char Ch;
 
@@ -28,9 +28,27 @@ namespace RegexCrossword.regex
       return Ch.GetHashCode();
     }
 
-    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    /// <summary>
+    /// Yields each of the possible matches of the regex from this point onwards as a CharSetString.
+    /// </summary>
+    /// <param name="charIdx">
+    /// The current index of the match in the string
+    /// </param>
+    /// <param name="currentConstraints">
+    /// The prior constraints on any matches
+    /// </param>
+    public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      throw new System.NotImplementedException();
+      if (charIdx >= currentConstraints.Length || !currentConstraints[charIdx].Contains(Ch))
+      {
+        yield break; // no matches
+      }
+      var thisCharSet = CharSet.OneOf(Ch);
+
+      foreach (var remainderMatch in Next.GeneratePossibleMatches(charIdx + 1, currentConstraints))
+      {
+        yield return CharSetString.Cons(thisCharSet, remainderMatch);
+      }
     }
 
     public override string ToString()

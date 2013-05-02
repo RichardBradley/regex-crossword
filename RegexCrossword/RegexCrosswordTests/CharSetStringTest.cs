@@ -15,21 +15,21 @@ namespace RegexCrosswordTests
       // . doesn't need expanding:
       Assert.AreEqual(
         "...",
-        ToCharSetString("...").Union(ToCharSetString("ABC")).ToString());
+        CharSetString.Parse("...").Union(CharSetString.Parse("ABC")).ToString());
 
       // A + A = A
       // [^A] + A = .
       // [^B] + A = [^B]
       Assert.AreEqual(
         "A.[^B]",
-        ToCharSetString("A[^A][^B]").Union(ToCharSetString("AAA")).ToString());
+        CharSetString.Parse("A[^A][^B]").Union(CharSetString.Parse("AAA")).ToString());
 
       // [AB] + A = [AB]
       // [AB] + C = [ABC]
       // [AB] + [BC] = [ABC]
       Assert.AreEqual(
         "[AB][ABC][ABC]",
-        ToCharSetString("[AB][AB][AB]").Union(ToCharSetString("AC[BC]")).ToString());
+        CharSetString.Parse("[AB][AB][AB]").Union(CharSetString.Parse("AC[BC]")).ToString());
 
       // [AB] + [^A] = .
       // [AB] + [^AB] = .
@@ -37,13 +37,26 @@ namespace RegexCrosswordTests
       // [ABC] + [^CDE] = [^DE]
       Assert.AreEqual(
         "..[^C][^DE]",
-        ToCharSetString("[AB][AB][AB][ABC]").Union(ToCharSetString("[^A][^AB][^ABC][^CDE]")).ToString());
+        CharSetString.Parse("[AB][AB][AB][ABC]").Union(CharSetString.Parse("[^A][^AB][^ABC][^CDE]")).ToString());
 
       // [^A] + [^B] = .
       // [^AB] + [^BC] = [^B]
       Assert.AreEqual(
         ".[^B]",
-        ToCharSetString("[^A][^AB]").Union(ToCharSetString("[^B][^BC]")).ToString());
+        CharSetString.Parse("[^A][^AB]").Union(CharSetString.Parse("[^B][^BC]")).ToString());
+    }
+
+    [TestMethod]
+    public void TestLengthChecks()
+    {
+      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+        () => CharSetString.Parse("...").Union(CharSetString.Parse("..")));
+      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+        () => CharSetString.Parse("..").Union(CharSetString.Parse("...")));
+      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+        () => CharSetString.Parse("...").Intersect(CharSetString.Parse("..")));
+      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+        () => CharSetString.Parse("..").Intersect(CharSetString.Parse("...")));
     }
 
     [TestMethod]
@@ -56,48 +69,19 @@ namespace RegexCrosswordTests
       // [^AB] ^ [ABC] = [C]
       // [^AB] ^ [^BC] = [^ABC]
 
-      var charSetString = ToCharSetString(".[AB][AB][AB][^AB][^AB]");
-      charSetString.Intersect(ToCharSetString("AA[BC][^AC][ABC][^BC]"));
+      var charSetString = CharSetString.Parse(".[AB][AB][AB][^AB][^AB]");
+      charSetString.Intersect(CharSetString.Parse("AA[BC][^AC][ABC][^BC]"));
       Assert.AreEqual(
         "AABBC[^ABC]",
         charSetString.ToString());
 
       // [AB] ^ [^AB] = error
       AssertThrows<CharSet.EmptyIntersectionException>(() => 
-        ToCharSetString("[AB]").Intersect(ToCharSetString("[^AB]")));
+        CharSetString.Parse("[AB]").Intersect(CharSetString.Parse("[^AB]")));
 
       // [AB] ^ [CD] = error
       AssertThrows<CharSet.EmptyIntersectionException>(() =>
-        ToCharSetString("[AB]").Intersect(ToCharSetString("[CD]")));
-    }
-
-    /// <summary>
-    /// Creates a CharSetString from a regex specification
-    /// </summary>
-    private CharSetString ToCharSetString(string regexStyleFormat)
-    {
-      var regex = new Regex(regexStyleFormat);
-      var charSets = new List<CharSet>();
-      foreach (var atom in regex.Atoms)
-      {
-        if (atom is RegexAnyChar)
-        {
-          charSets.Add(new CharSet());
-        }
-        else if (atom is RegexCharset)
-        {
-          charSets.Add(((RegexCharset)atom).CharSet);
-        }
-        else if (atom is RegexLiteralChar)
-        {
-          charSets.Add(CharSet.OneOf(((RegexLiteralChar)atom).Ch));
-        }
-        else
-        {
-          throw new Exception("Unexpected type: " + atom);
-        }
-      }
-      return new CharSetString(charSets.ToArray());
+        CharSetString.Parse("[AB]").Intersect(CharSetString.Parse("[CD]")));
     }
 
     private static void AssertThrows<T>(Action action)

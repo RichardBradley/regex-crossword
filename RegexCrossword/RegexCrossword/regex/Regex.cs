@@ -7,6 +7,8 @@ namespace RegexCrossword.regex
 {
   public class Regex : RegexAtomList
   {
+    public List<RegexAtom> Atoms = new List<RegexAtom>();
+
     /// <summary>
     /// Parses the given pattern into a regex object
     /// </summary>
@@ -23,7 +25,7 @@ namespace RegexCrossword.regex
         switch (ch)
         {
           case -1:
-            return;
+            break;
           case '(':
             context.Push(new RegexCapturingGroupChoices());
             break;
@@ -34,6 +36,7 @@ namespace RegexCrossword.regex
                 throw new ParseException(reader, "No open CapturingGroup");
               }
               var group = (RegexCapturingGroupChoices)context.Pop();
+              group.FinishParse();
               ((RegexAtomList) context.Peek()).Add(group);
               break;
             }
@@ -62,21 +65,21 @@ namespace RegexCrossword.regex
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexMaybe(last));
+              ((RegexAtomList)context.Peek()).Add(new RegexMaybe((RegexNonTerminalAtom) last));
               break;
             }
           case '*':
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexZeroOrMore(last));
+              ((RegexAtomList)context.Peek()).Add(new RegexZeroOrMore((RegexNonTerminalAtom) last));
               break;
             }
           case '+':
             {
               // modify the last element
               var last = ((RegexAtomList)context.Peek()).Pop();
-              ((RegexAtomList)context.Peek()).Add(new RegexOneOrMore(last));
+              ((RegexAtomList)context.Peek()).Add(new RegexOneOrMore((RegexNonTerminalAtom) last));
               break;
             }
           case '|':
@@ -116,8 +119,7 @@ namespace RegexCrossword.regex
         throw new Exception("Parse error: not all brackets closed");
       }
 
-      // Implictly the regex must match the entire string:
-      Add(new RegexEndOfLine());
+      FinishParse();
     }
 
     public Regex(params RegexAtom[] atoms)
@@ -146,20 +148,46 @@ namespace RegexCrossword.regex
     /// </summary>
     public bool AddConstraints(CharSetString currentConstraints)
     {
-      var atomsEnum = Atoms.GetEnumerator();
-      if (!atomsEnum.MoveNext())
-      {
-        throw new Exception("empty regex");
-      }
-      var first = atomsEnum.Current;
+      var first = Atoms.First();
 
-      var possibilitiesSeen = CharSetString.UnconstrainedStringOfLength(currentConstraints.Length);
-      foreach (var possibility in first.GeneratePossibleMatches(0, currentConstraints, atomsEnum))
+      var possibilitiesSeen = CharSetString.EmptySetsStringOfLength(currentConstraints.Length);
+      foreach (var possibility in first.GeneratePossibleMatches(0, currentConstraints))
       {
         possibilitiesSeen.Union(possibility);
       }
 
       return currentConstraints.Intersect(possibilitiesSeen);
+    }
+
+    /// <summary>
+    /// Set the 'Next' links on all child elements
+    /// </summary>
+    public void FinishParse()
+    {
+      // Implictly the regex must match the entire string:
+      Add(new RegexEndOfLine());
+
+      for (int i = 0; i < Atoms.Count - 1; i++)
+      {
+        ((RegexNonTerminalAtom) Atoms[i]).Next = Atoms[i + 1];
+      }
+    }
+
+    public void Add(RegexAtom atom)
+    {
+      Atoms.Add(atom);
+    }
+
+    public RegexAtom Pop()
+    {
+      var last = Atoms[Atoms.Count - 1];
+      Atoms.RemoveAt(Atoms.Count - 1);
+      return last;
+    }
+
+    public override string ToString()
+    {
+      return string.Format("{0}[{1}]", GetType(), string.Join(", ", Atoms));
     }
   }
 }

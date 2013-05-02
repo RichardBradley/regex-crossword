@@ -6,30 +6,41 @@ namespace RegexCrossword.regex
   /// <summary>
   /// Both a capturing group and a choice list, e.g. "(a|b)"
   /// </summary>
-  public class RegexCapturingGroupChoices : RegexAtomList, RegexAtom
+  public class RegexCapturingGroupChoices : RegexNonTerminalAtom, RegexAtomList
   {
     public List<List<RegexAtom>> Choices;
 
     public RegexCapturingGroupChoices()
     {
-      Choices = new List<List<RegexAtom>> {Atoms};
+      Choices = new List<List<RegexAtom>> {new List<RegexAtom>()};
     }
 
     public RegexCapturingGroupChoices(params List<RegexAtom>[] choices)
     {
       Choices = new List<List<RegexAtom>>(choices);
-      Atoms = Choices.Last();
+    }
+
+    public void Add(RegexAtom atom)
+    {
+      Choices.Last().Add(atom);
+    }
+
+    public RegexAtom Pop()
+    {
+      var atoms = Choices.Last();
+      var last = atoms[atoms.Count - 1];
+      atoms.RemoveAt(atoms.Count - 1);
+      return last;
     }
 
     public void StartNextChoice()
     {
-      Atoms = new List<RegexAtom>();
-      Choices.Add(Atoms);
+      Choices.Add(new List<RegexAtom>());
     }
 
     public override bool Equals(object obj)
     {
-      return base.Equals(obj)
+      return GetType() == obj.GetType()
              && Choices.SequenceEqual(
                ((RegexCapturingGroupChoices) obj).Choices,
                new ListSequenceEqualComparer<RegexAtom>());
@@ -37,12 +48,34 @@ namespace RegexCrossword.regex
 
     public override int GetHashCode()
     {
-      return Choices.GetHashCode();
+      return 113;
     }
 
-    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    /// <summary>
+    /// Yields each of the possible matches of the regex from this point onwards as a CharSetString.
+    /// </summary>
+    /// <param name="charIdx">
+    /// The current index of the match in the string
+    /// </param>
+    /// <param name="currentConstraints">
+    /// The prior constraints on any matches
+    /// </param>
+    public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      throw new System.NotImplementedException();
+      foreach (var choice in Choices)
+      {
+        var first = choice.First();
+        foreach (var choiceMatch in first.GeneratePossibleMatches(charIdx, currentConstraints))
+        {
+          foreach (var remainderMatch in 
+            Next.GeneratePossibleMatches(
+              charIdx + choiceMatch.Length,
+              currentConstraints))
+          {
+            yield return choiceMatch.Concat(remainderMatch);
+          }
+        }
+      }
     }
 
     public override string ToString()
@@ -50,6 +83,32 @@ namespace RegexCrossword.regex
       return string.Format("{0}[{1}]",
                            GetType(),
                            string.Join("|", Choices.Select(c => string.Join(", ", c))));
+    }
+
+    /// <summary>
+    /// Set the 'Next' links on all child elements
+    /// </summary>
+    public void FinishParse()
+    {
+      foreach (var choice in Choices)
+      {
+        choice.Add(new EmptyMatchTerminalRegexAtom());
+        for (int i = 0; i < choice.Count - 1; i++)
+        {
+          ((RegexNonTerminalAtom)choice[i]).Next = choice[i + 1];
+        }
+      }
+    }
+
+    /// <summary>
+    /// A regex atom which always matches the empty string, to terminate each child choice
+    /// </summary>
+    private class EmptyMatchTerminalRegexAtom : RegexAtom
+    {
+      public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
+      {
+        return new[] { CharSetString.EmptyString() };
+      }
     }
   }
 }

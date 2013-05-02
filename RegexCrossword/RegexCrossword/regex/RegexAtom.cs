@@ -13,9 +13,6 @@ namespace RegexCrossword.regex
     /// <param name="currentConstraints">
     /// The prior constraints on any matches
     /// </param>
-    /// <param name="nextAtomEnumerator">
-    /// An enumerator which will generate the next atoms in the regex if MoveNext() returns true
-    /// </param>
-    IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator);
+    IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints);
   }
 }

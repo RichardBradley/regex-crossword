@@ -1,13 +1,12 @@
 ﻿
-using System.Collections.Generic;
 
 namespace RegexCrossword.regex
 {
-  public abstract class RegexModifier : RegexAtom
+  public abstract class RegexModifier : RegexNonTerminalAtom
   {
-    public readonly RegexAtom Inner;
+    public readonly RegexNonTerminalAtom Inner;
 
-    protected RegexModifier(RegexAtom inner)
+    protected RegexModifier(RegexNonTerminalAtom inner)
     {
       Inner = inner;
     }
@@ -21,11 +20,6 @@ namespace RegexCrossword.regex
     public override int GetHashCode()
     {
       return 17*Inner.GetHashCode();
-    }
-
-    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
-    {
-      throw new System.NotImplementedException();
     }
 
     public override string ToString()

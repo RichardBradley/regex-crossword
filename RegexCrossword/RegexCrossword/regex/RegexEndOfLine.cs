@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RegexCrossword.regex
 {
   class RegexEndOfLine : RegexAtom
   {
-    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints, IEnumerator<RegexAtom> nextAtomEnumerator)
+    public IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      throw new NotImplementedException();
+      if (charIdx == currentConstraints.Length)
+      {
+        yield return CharSetString.EmptyString();
+      }
     }
   }
 }

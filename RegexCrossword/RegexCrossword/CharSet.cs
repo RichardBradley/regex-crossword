@@ -169,5 +169,15 @@ namespace RegexCrossword
       {
       }
     }
+
+    public bool Contains(char ch)
+    {
+      return IsInclusive ? Chars.Contains(ch) : !Chars.Contains(ch);
+    }
+
+    public CharSet Clone()
+    {
+      return new CharSet {Chars = new SortedSet<char>(Chars), IsInclusive = IsInclusive};
+    }
   }
 }

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CharSet.cs" />
     <Compile Include="CharSetString.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="ListSequenceEqualComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="regex\RegexLiteralChar.cs" />
     <Compile Include="regex\RegexMaybe.cs" />
     <Compile Include="regex\RegexModifier.cs" />
+    <Compile Include="regex\RegexNonTerminalAtom.cs" />
     <Compile Include="regex\RegexOneOrMore.cs" />
     <Compile Include="regex\RegexZeroOrMore.cs" />
     <Compile Include="SortedSetExtensions.cs" />

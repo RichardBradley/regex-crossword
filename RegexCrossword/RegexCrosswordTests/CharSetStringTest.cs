@@ -49,13 +49,13 @@ namespace RegexCrosswordTests
     [TestMethod]
     public void TestLengthChecks()
     {
-      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+      ExceptionAssert.AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
         () => CharSetString.Parse("...").Union(CharSetString.Parse("..")));
-      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+      ExceptionAssert.AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
         () => CharSetString.Parse("..").Union(CharSetString.Parse("...")));
-      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+      ExceptionAssert.AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
         () => CharSetString.Parse("...").Intersect(CharSetString.Parse("..")));
-      AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
+      ExceptionAssert.AssertThrows<EnumerableExtensions.EnumerationLengthsDifferException>(
         () => CharSetString.Parse("..").Intersect(CharSetString.Parse("...")));
     }
 
@@ -76,25 +76,12 @@ namespace RegexCrosswordTests
         charSetString.ToString());
 
       // [AB] ^ [^AB] = error
-      AssertThrows<CharSet.EmptyIntersectionException>(() => 
+      ExceptionAssert.AssertThrows<CharSet.EmptyIntersectionException>(() => 
         CharSetString.Parse("[AB]").Intersect(CharSetString.Parse("[^AB]")));
 
       // [AB] ^ [CD] = error
-      AssertThrows<CharSet.EmptyIntersectionException>(() =>
+      ExceptionAssert.AssertThrows<CharSet.EmptyIntersectionException>(() =>
         CharSetString.Parse("[AB]").Intersect(CharSetString.Parse("[CD]")));
-    }
-
-    private static void AssertThrows<T>(Action action)
-    {
-      try
-      {
-        action();
-        Assert.Fail("Expected exception");
-      }
-      catch (Exception e)
-      {
-        Assert.IsInstanceOfType(e, typeof(T));
-      }
     }
   }
 }

@@ -131,5 +131,10 @@ namespace RegexCrossword
       }
       return new CharSetString(charSets.ToArray());
     }
+
+    public CharSetString Clone()
+    {
+      return new CharSetString(_chars.Select(c => c.Clone()).ToList());
+    }
   }
 }

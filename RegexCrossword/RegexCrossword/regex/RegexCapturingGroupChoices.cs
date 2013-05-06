@@ -10,6 +10,12 @@ namespace RegexCrossword.regex
   {
     public List<List<RegexAtom>> Choices;
 
+    /// <summary>
+    /// The possible strings which were matched the last time that this group
+    /// was matched
+    /// </summary>
+    public List<CharSetString> PossibleMatches = new List<CharSetString>(); 
+
     public RegexCapturingGroupChoices()
     {
       Choices = new List<List<RegexAtom>> {new List<RegexAtom>()};
@@ -63,11 +69,13 @@ namespace RegexCrossword.regex
     /// </param>
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
+      PossibleMatches.Clear();
       foreach (var choice in Choices)
       {
         var first = choice.First();
         foreach (var choiceMatch in first.GeneratePossibleMatches(charIdx, currentConstraints))
         {
+          PossibleMatches.Add(choiceMatch);
           foreach (var remainderMatch in 
             Next.GeneratePossibleMatches(
               charIdx + choiceMatch.Length,

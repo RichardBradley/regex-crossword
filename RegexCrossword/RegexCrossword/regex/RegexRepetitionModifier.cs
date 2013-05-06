@@ -48,37 +48,37 @@ namespace RegexCrossword.regex
     /// </param>
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      var innerMatchSoFar = CharSetString.EmptyString();
+      var innerMatchesSoFar = new List<CharSetString> {CharSetString.EmptyString()};
       Inner.Next = new RegexEmptyMatchTerminalAtom();
 
       for (int innerMatchCount = 0; innerMatchCount <= (MaxReps ?? Int32.MaxValue); innerMatchCount++)
       {
         if (innerMatchCount >= MinReps)
         {
-          foreach (var nextMatch in Next.GeneratePossibleMatches(
-            charIdx + innerMatchCount, currentConstraints))
+          foreach (var innerMatchSoFar in innerMatchesSoFar)
           {
-            yield return innerMatchSoFar.Concat(nextMatch);
+            foreach (var nextMatch in Next.GeneratePossibleMatches(
+              charIdx + innerMatchSoFar.Length, currentConstraints))
+            {
+              yield return innerMatchSoFar.Concat(nextMatch);
+            }
           }
         }
 
-        var innerMatch = Inner.GeneratePossibleMatches(
+        var innerMatches = Inner.GeneratePossibleMatches(
           charIdx + innerMatchCount,
           currentConstraints).ToList();
 
-        if (!innerMatch.Any())
+        if (!innerMatches.Any())
         {
           yield break;
         }
-        else if (innerMatch.Count() == 1)
-        {
-          innerMatchSoFar = innerMatchSoFar.Concat(innerMatch.First());
-        }
-        else
-        {
-          // to support this, we'd need to return the cartesian product of innerMatches and nextMatces
-          throw new Exception("multiple inner matches not supported");
-        }
+
+        // Cross join all the matches so far with each new possible match
+        innerMatchesSoFar = innerMatchesSoFar
+          .SelectMany(prevInnerMatch =>
+                      innerMatches.Select(nextMatch => prevInnerMatch.Concat(nextMatch)))
+          .ToList();
       }
     }
 

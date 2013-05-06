@@ -17,6 +17,7 @@ namespace RegexCrossword.regex
       var reader = new StringReader(pattern);
       var context = new Stack<object>();
       context.Push(this);
+      var capturingGroups = new List<RegexCapturingGroupChoices>();
 
       int ch;
       do
@@ -27,8 +28,12 @@ namespace RegexCrossword.regex
           case -1:
             break;
           case '(':
-            context.Push(new RegexCapturingGroupChoices());
-            break;
+            {
+              var group = new RegexCapturingGroupChoices();
+              capturingGroups.Add(group);
+              context.Push(group);
+              break;
+            }
           case ')':
             {
               if (!(context.Peek() is RegexCapturingGroupChoices))
@@ -95,8 +100,23 @@ namespace RegexCrossword.regex
             ((RegexAtomList)context.Peek()).Add(RegexCharset.AnyChar());
             break;
           case '\\':
-            throw new NotImplementedException("TODO");
+            context.Push(new RegexBackReference());
+            break;
           default:
+            if (ch >= '1' && ch <= '9')
+            {
+              var br = (RegexBackReference) context.Pop();
+              var groupNumber = (ch - '0');
+              if (groupNumber > capturingGroups.Count)
+              {
+                // (the GeneratePossibleMatches code also relies on this, it's not just
+                // a parsing thing)
+                throw new ParseException(reader, "Cannot reference group before it is declared");
+              }
+              br.Group = capturingGroups[groupNumber - 1];
+              ((Regex)context.Peek()).Add(br);
+              break;
+            }
             if (ch < 'A' || ch > 'Z')
             {
               throw new ParseException(reader, "Expecting A-Z, found '" + (char)ch + "'");

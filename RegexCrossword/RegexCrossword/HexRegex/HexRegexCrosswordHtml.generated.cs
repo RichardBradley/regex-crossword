@@ -11,12 +11,17 @@
 
 namespace RegexCrossword.HexRegex
 {
+    
+    #line 2 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
     using System;
+    
+    #line default
+    #line hidden
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     
-    #line 2 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+    #line 3 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
     using HexRegex;
     
     #line default
@@ -27,7 +32,7 @@ namespace RegexCrossword.HexRegex
     {
 #line hidden
 
-        #line 3 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+        #line 4 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
 
     public HexRegexCrossword Model { get; set; }
 
@@ -42,89 +47,184 @@ WriteLiteral("\r\n");
 
 
 
-WriteLiteral("\r\n<html>\r\n    <head>\r\n<!-- Hex grid based on http://stackoverflow.com/questions/1" +
-"0062887/generate-repeating-hexagonal-pattern-with-css3 -->\r\n        <style type=" +
-"\"text/css\">\r\n            \r\n            \r\nqq * { box-sizing: border-box; margin: " +
-"0; padding: 0; }\r\n.hexrow { text-align: center; }\r\n/* .hexrow:first-child { marg" +
-"in-top: 7%; } */\r\nqq .hexagon {\r\n    /* vert box is x wide, sqrt(3)*x tall */\r\n " +
-"   width: 2em;\r\n    height: 3.46em;\r\n    position: relative;\r\n    display: inlin" +
-"e-block;\r\n    overflow: hidden;\r\n    margin: 0 8.5%;\r\n    padding: 16%;\r\n/*    t" +
-"ransform: rotate(30deg) skewY(30deg) scaleX(.866); /* .866 = sqrt(3)/2 = sin(60 " +
-"deg) */\r\n    background-color: green;\r\n}\r\nqq .hexagon:before {\r\n    display: blo" +
-"ck;\r\n    position: absolute;\r\n    /* 86.6% = (sqrt(3)/2)*100% = .866*100% */\r\n  " +
-"  top: 6.7%; right: 0; bottom: 6.7%; left: 0; /* 6.7% = (100% -86.6%)/2 */\r\n    " +
-"transform: scaleX(1.155) /* 1.155 = 2/sqrt(3) */ \r\n               skewY(-30deg) " +
-"rotate(-30deg);\r\n    background-color: yellow;\r\n    background-size: cover;\r\n   " +
-" content: \'\';\r\n}\r\n\r\nqq .hexagon:after {\r\n    display: block;\r\n    position: abso" +
-"lute;\r\n    /* 86.6% = (sqrt(3)/2)*100% = .866*100% */\r\n    top: 6.7%; right: 0; " +
-"bottom: 6.7%; left: 0; /* 6.7% = (100% -86.6%)/2 */\r\n    transform: scaleX(1.155" +
-") /* 1.155 = 2/sqrt(3) */ \r\n               skewY(-30deg) rotate(-30deg);\r\n    ba" +
-"ckground-color: red;\r\n    background-size: cover;\r\n    content: \'\';\r\n}\r\n\r\n/*****" +
-"***************/\r\n\r\n\r\n.hexagon {\r\n    border-color: black;\r\n    border-style: so" +
-"lid;\r\n    border-width: 0 1px;\r\n    display: inline;\r\n    padding: 0.5em;\r\n}\r\n\r\n" +
-"        </style>\r\n    </head>\r\n    <body>\r\n        <div id=\"grid\">\r\n");
+
+WriteLiteral(@"
+<html>
+    <head>
+        <style type=""text/css"">
+            
+            body {
+                overflow-x: hidden;
+            }
+            
+            .hexagon {
+                border-color: blue;
+                border-style: solid;
+                border-width: 1px;
+                display: inline-block;
+                padding: 0;
+                width: 2em;
+                margin-left: -1em;
+                height: 2em;
+                margin-top: -1em;
+                text-align: center;
+                position: absolute;
+            }
+        </style>
+        <script type=""text/javascript"" src=""http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js""></script>
+        <script type=""text/javascript"">
+            // use axial coords http://www.redblobgames.com/grids/hexagons/
+");
 
 
             
-            #line 66 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
-             for (int row = 0; row <= Model.GridRows.GetUpperBound(1); row++)
+            #line 32 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+               var firstX = true; 
+
+            
+            #line default
+            #line hidden
+WriteLiteral("            var hexData = {\r\n");
+
+
+            
+            #line 34 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+             for (int x = -6; x <= 6; x++)
             {
 
             
             #line default
             #line hidden
-WriteLiteral("                <div class=\"hexrow\">\r\n                    <div class=\"clue\">");
+WriteLiteral("                ");
 
 
             
-            #line 69 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
-                                 Write(Model.Clues[0, row]);
+            #line 36 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                  Write(firstX ? "" : ",");
 
             
             #line default
             #line hidden
-WriteLiteral("</div>\r\n");
+WriteLiteral(" \"");
 
 
             
-            #line 70 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
-                     foreach (var ch in Model.GridRows[0, row])
+            #line 36 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                                       Write(x);
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\":{");
+
+WriteLiteral("\r\n");
+
+
+            
+            #line 37 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                firstX = false;
+                var firstZ = true;
+                for (int y = -6; y <= 6; y++)
+                {
+                    var z = 0 - x - y;
+                    if (Math.Abs(z) <= 6)
                     {
 
             
             #line default
             #line hidden
-WriteLiteral("                        <div class=\"hexagon\">");
+WriteLiteral("                        ");
 
 
             
-            #line 72 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
-                                        Write(ch);
+            #line 44 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                          Write(firstZ ? "" : ",");
 
             
             #line default
             #line hidden
-WriteLiteral("</div>\r\n");
+WriteLiteral(" \"");
 
 
             
-            #line 73 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 44 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                                               Write(z);
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\" : \"");
+
+
+            
+            #line 44 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                                                      Write(x);
+
+            
+            #line default
+            #line hidden
+WriteLiteral(",");
+
+
+            
+            #line 44 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                                                         Write(z);
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\"");
+
+WriteLiteral("\r\n");
+
+
+            
+            #line 45 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+                        firstZ = false;
                     }
+                }
 
             
             #line default
             #line hidden
-WriteLiteral("                </div>\r\n");
+WriteLiteral("                ");
+
+WriteLiteral("}");
+
+WriteLiteral("\r\n");
 
 
             
-            #line 75 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 49 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
             }
 
             
             #line default
             #line hidden
-WriteLiteral("        </div>\r\n    </body>\r\n</html>\r\n");
+WriteLiteral("            };\r\n            var SQRT_3 = Math.sqrt(3);\r\n            var SIZE = 25" +
+";\r\n            var CENTRE_X = SIZE * 15;\r\n            var CENTRE_Y = CENTRE_X;\r\n" +
+"\r\n            var hexCornerOffsets = [];\r\n            for (var i = 0; i <= 6; i+" +
+"+) {\r\n                var angle = 2 * Math.PI / 6 * (i + 0.5);\r\n                " +
+"var x_i = SIZE * Math.cos(angle);\r\n                var y_i = SIZE * Math.sin(ang" +
+"le);\r\n                hexCornerOffsets[i] = { \'x\': x_i, \'y\': y_i };\r\n           " +
+" }\r\n\r\n            $(function () {\r\n                var container = $(\'#container" +
+"\');\r\n                var canvas = document.getElementById(\"canvas\").getContext(\'" +
+"2d\');\r\n                $.each(hexData, function (q, rs) {\r\n                    q" +
+" = q - 0;\r\n                    $.each(rs, function (r, val) {\r\n                 " +
+"       r = r - 0;\r\n                        var x = CENTRE_X + (SIZE * SQRT_3 * (" +
+"q + r / 2.0));\r\n                        var y = CENTRE_Y + (SIZE * 3.0 / 2.0 * r" +
+");\r\n\r\n                        var div = $(\"<div />\")\r\n                          " +
+"  .addClass(\'hexagon\')\r\n                            .text(val)\r\n                " +
+"            .offset({ top: y, left: x });\r\n                        container.app" +
+"end(div);\r\n                        hexData[q][r] = div;\r\n\r\n                     " +
+"   canvas.beginPath();\r\n                        canvas.moveTo(x + hexCornerOffse" +
+"ts[0].x, y + hexCornerOffsets[0].y);\r\n                        for (var i = 1; i " +
+"<= 6; i++) {\r\n                            canvas.lineTo(x + hexCornerOffsets[i]." +
+"x, y + hexCornerOffsets[i].y);\r\n                        }\r\n                     " +
+"   canvas.stroke();\r\n                    });\r\n                });\r\n            }" +
+");\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <div id=\"container\">\r\n  " +
+"          <canvas id=\"canvas\" width=\"1000\" height=\"1000\"></canvas>\r\n            " +
+"<div id=\"elts\"></div>\r\n        </div>\r\n    </body>\r\n</html>\r\n");
 
 
         }

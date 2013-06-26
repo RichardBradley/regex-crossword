@@ -113,6 +113,7 @@ namespace RegexCrossword.regex
                 // a parsing thing)
                 throw new ParseException(reader, "Cannot reference group before it is declared");
               }
+              br.GroupNumber = groupNumber;
               br.Group = capturingGroups[groupNumber - 1];
               ((Regex)context.Peek()).Add(br);
               break;
@@ -207,7 +208,9 @@ namespace RegexCrossword.regex
 
     public override string ToString()
     {
-      return string.Format("{0}[{1}]", GetType(), string.Join(", ", Atoms));
+      // Strip off the last atom when displaying as a string, since that's a fake entry
+      // we added in FinishParse
+      return string.Join("", Atoms.Take(Math.Max(0, Atoms.Count - 1)));
     }
 
     public override bool Equals(object obj)

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RazorGenerator.Templating">
+      <HintPath>..\packages\RazorGenerator.Templating.2.0.1\lib\net40\RazorGenerator.Templating.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +47,12 @@
     <Compile Include="CharSet.cs" />
     <Compile Include="CharSetString.cs" />
     <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="HexRegex\HexRegexCrossword.cs" />
+    <Compile Include="HexRegex\HexRegexCrosswordHtml.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HexRegexCrosswordHtml.cshtml</DependentUpon>
+    </Compile>
     <Compile Include="ListSequenceEqualComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,6 +71,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="HexRegex\HexRegexCrosswordHtml.cshtml">
+      <Generator>RazorGenerator</Generator>
+      <LastGenOutput>HexRegexCrosswordHtml.generated.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

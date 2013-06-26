@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RegexCrossword.regex
@@ -89,9 +90,12 @@ namespace RegexCrossword.regex
 
     public override string ToString()
     {
-      return string.Format("{0}[{1}]",
-                           GetType(),
-                           string.Join("|", Choices.Select(c => string.Join(", ", c))));
+      // Strip off the last atom when displaying each choice as a string, since that's a
+      // fake entry we added in FinishParse
+      Func<List<RegexAtom>, string> choiceToStr =
+        c => string.Join("", c.Take(Math.Max(0, c.Count - 1)));
+
+      return string.Format("({0})", string.Join("|", Choices.Select(choiceToStr)));
     }
 
     /// <summary>

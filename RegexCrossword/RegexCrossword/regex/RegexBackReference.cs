@@ -5,6 +5,7 @@ namespace RegexCrossword.regex
 {
   public class RegexBackReference : RegexNonTerminalAtom
   {
+    public int GroupNumber;
     private RegexCapturingGroupChoices _group;
 
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
@@ -53,6 +54,11 @@ namespace RegexCrossword.regex
         return _group;
       }
       set { _group = value; }
+    }
+
+    public override string ToString()
+    {
+      return "\\" + GroupNumber;
     }
   }
 }

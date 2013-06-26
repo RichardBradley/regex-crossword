@@ -42,29 +42,5 @@ namespace RegexCrossword
     public class EnumerationLengthsDifferException : Exception
     {
     }
-
-    public static ICloneable ToCloneable<T>(this IEnumerator<T> enumerator)
-    {
-      if (enumerator is ICloneable)
-      {
-        return (ICloneable) enumerator;
-      }
-      var elts = new List<T>();
-      while (enumerator.MoveNext())
-      {
-        elts.Add(enumerator.Current);
-      }
-      return new EnumCloneSource {Source = elts};
-    }
-
-    private class EnumCloneSource : ICloneable
-    {
-      public IEnumerable Source;
-
-      public object Clone()
-      {
-        return Source.GetEnumerator();
-      }
-    }
   }
 }

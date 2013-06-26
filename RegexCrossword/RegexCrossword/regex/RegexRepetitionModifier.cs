@@ -34,7 +34,19 @@ namespace RegexCrossword.regex
 
     public override string ToString()
     {
-      return String.Format("{0}[{1}{{{2},{3}}}]", GetType(), Inner, MinReps, MaxReps);
+      if (MinReps == 0 && MaxReps == 1)
+      {
+        return string.Format("{0}?", Inner);
+      }
+      if (MinReps == 0 && MaxReps == null)
+      {
+        return string.Format("{0}*", Inner);
+      }
+      if (MinReps == 1 && MaxReps == null)
+      {
+        return string.Format("{0}+", Inner);
+      }
+      return string.Format("{0}{{{1},{2}}}", Inner, MinReps, MaxReps);
     }
 
     /// <summary>

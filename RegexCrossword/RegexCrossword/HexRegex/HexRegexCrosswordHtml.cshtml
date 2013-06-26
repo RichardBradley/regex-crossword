@@ -1,0 +1,78 @@
+﻿@* Generator : Template TypeVisibility : Internal *@
+@using HexRegex
+@functions  {
+    public HexRegexCrossword Model { get; set; }
+}
+<html>
+    <head>
+<!-- Hex grid based on http://stackoverflow.com/questions/10062887/generate-repeating-hexagonal-pattern-with-css3 -->
+        <style type="text/css">
+            
+            
+qq * { box-sizing: border-box; margin: 0; padding: 0; }
+.hexrow { text-align: center; }
+/* .hexrow:first-child { margin-top: 7%; } */
+qq .hexagon {
+    /* vert box is x wide, sqrt(3)*x tall */
+    width: 2em;
+    height: 3.46em;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    margin: 0 8.5%;
+    padding: 16%;
+/*    transform: rotate(30deg) skewY(30deg) scaleX(.866); /* .866 = sqrt(3)/2 = sin(60 deg) */
+    background-color: green;
+}
+qq .hexagon:before {
+    display: block;
+    position: absolute;
+    /* 86.6% = (sqrt(3)/2)*100% = .866*100% */
+    top: 6.7%; right: 0; bottom: 6.7%; left: 0; /* 6.7% = (100% -86.6%)/2 */
+    transform: scaleX(1.155) /* 1.155 = 2/sqrt(3) */ 
+               skewY(-30deg) rotate(-30deg);
+    background-color: yellow;
+    background-size: cover;
+    content: '';
+}
+
+qq .hexagon:after {
+    display: block;
+    position: absolute;
+    /* 86.6% = (sqrt(3)/2)*100% = .866*100% */
+    top: 6.7%; right: 0; bottom: 6.7%; left: 0; /* 6.7% = (100% -86.6%)/2 */
+    transform: scaleX(1.155) /* 1.155 = 2/sqrt(3) */ 
+               skewY(-30deg) rotate(-30deg);
+    background-color: red;
+    background-size: cover;
+    content: '';
+}
+
+/********************/
+
+
+.hexagon {
+    border-color: black;
+    border-style: solid;
+    border-width: 0 1px;
+    display: inline;
+    padding: 0.5em;
+}
+
+        </style>
+    </head>
+    <body>
+        <div id="grid">
+            @for (int row = 0; row <= Model.GridRows.GetUpperBound(1); row++)
+            {
+                <div class="hexrow">
+                    <div class="clue">@Model.Clues[0, row]</div>
+                    @foreach (var ch in Model.GridRows[0, row])
+                    {
+                        <div class="hexagon">@ch</div>
+                    }
+                </div>
+            }
+        </div>
+    </body>
+</html>

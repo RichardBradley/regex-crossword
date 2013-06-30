@@ -90,21 +90,23 @@ namespace RegexCrossword.HexRegex
       return new HexRegexCrossword(new Regex[3,13]
                                      {
                                        {
-                                         new Regex(".*H.*H.*"),
-                                         new Regex("(DI|NS|TH|OM)*"),
-                                         new Regex("F.*[AO].*[AO].*"),
-                                         new Regex("(O|RHH|MM)*"),
-                                         new Regex(".*"),
-                                         new Regex("C*MC(CCC|MM)*"),
-                                         new Regex("[^C]*[^R]*III.*"),
-                                         new Regex("(...?)\\1*"),
-                                         new Regex("([^X]|XCC)*"),
-                                         new Regex("(RR|HHH)*.?"),
-                                         new Regex("N.*X.X.X.*E"),
-                                         new Regex("R*D*M*"),
-                                         new Regex(".(C|HH)*")
+                                         // constant X from -6 to +6, running in +ve Y
+                                         new Regex(".*G.*V.*H.*"),
+                                         new Regex("[CR]*"),
+                                         new Regex(".*XEXM*"),
+                                         new Regex(".*DD.*CCM.*"),
+                                         new Regex(".*XHCR.*X.*"),
+                                         new Regex(".*(.)(.)(.)(.)\\4\\3\\2\\1.*"),
+                                         new Regex(".*(IN|SE|HI)"),
+                                         new Regex("[^C]*MMM[^C]*"),
+                                         new Regex(".*(.)C\\1X\\1.*"),
+                                         new Regex("[CEIMU]*OH[AEMOR]*"),
+                                         new Regex("(RX|[^R])*"),
+                                         new Regex("[^M]*M[^M]*"),
+                                         new Regex("(S|MM|HHH)*")
                                        },
                                        {
+                                         // constant Y from -6 to +6, running in +ve Z
                                          new Regex(".*SE.*UE.*"),
                                          new Regex(".*LR.*RL.*"),
                                          new Regex(".*OXR.*"),
@@ -120,19 +122,20 @@ namespace RegexCrossword.HexRegex
                                          new Regex("(ND|ET|IN)[^X]*")
                                        },
                                        {
-                                         new Regex(".*G.*V.*H.*"),
-                                         new Regex("[CR]*"),
-                                         new Regex(".*XEXM*"),
-                                         new Regex(".*DD.*CCM.*"),
-                                         new Regex(".*XHCR.*X.*"),
-                                         new Regex(".*(.)(.)(.)(.)\\4\\3\\2\\1.*"),
-                                         new Regex(".*(IN|SE|HI)"),
-                                         new Regex("[^C]*MMM[^C]*"),
-                                         new Regex(".*(.)C\\1X\\1.*"),
-                                         new Regex("[CEIMU]*OH[AEMOR]*"),
-                                         new Regex("(RX|[^R])*"),
-                                         new Regex("[^M]*M[^M]*"),
-                                         new Regex("(S|MM|HHH)*")
+                                         // constant Z, from -6 to +6, running in +ve X
+                                         new Regex(".*H.*H.*"),
+                                         new Regex("(DI|NS|TH|OM)*"),
+                                         new Regex("F.*[AO].*[AO].*"),
+                                         new Regex("(O|RHH|MM)*"),
+                                         new Regex(".*"),
+                                         new Regex("C*MC(CCC|MM)*"),
+                                         new Regex("[^C]*[^R]*III.*"),
+                                         new Regex("(...?)\\1*"),
+                                         new Regex("([^X]|XCC)*"),
+                                         new Regex("(RR|HHH)*.?"),
+                                         new Regex("N.*X.X.X.*E"),
+                                         new Regex("R*D*M*"),
+                                         new Regex(".(C|HH)*")
                                        }
                                      });
     }

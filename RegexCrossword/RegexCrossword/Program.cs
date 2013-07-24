@@ -14,20 +14,20 @@ namespace RegexCrossword
 
     private static void Solve(string name, HexRegexCrossword puzzle)
     {
-      Directory.CreateDirectory(name);
-
-      for (int dd = 0; dd <= 2; dd++)
+      try
       {
-        for (int ii = 0; ii <= 13; ii++)
-        {
-          puzzle.WriteHtml(
-            string.Format("{0}/p-{1}-{2}.html", name,  dd, ii),
-            dd,
-            ii);
-
-          return; // qq
-        }
+        puzzle.Solve();
       }
+      catch (Exception e)
+      {
+        Console.WriteLine("Failed to solve: " + e);
+      }
+
+      Directory.CreateDirectory(name);
+      var templ = new HexRegexCrosswordHtml { Model = puzzle };
+      File.WriteAllText(
+        string.Format("{0}/solved.html", name),
+        templ.TransformText());
     }
   }
 }

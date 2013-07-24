@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using RegexCrossword.regex;
 
 namespace RegexCrossword.HexRegex
@@ -38,20 +36,22 @@ namespace RegexCrossword.HexRegex
     /// </summary>
     public Regex[,] Clues;
 
+    public List<SolveStep> SolveLog;
+
     /// <param name="clues">
     ///  The clues as a 3xN grid
     /// </param>
     public HexRegexCrossword(Regex[,] clues)
     {
       if (3 != clues.GetUpperBound(0) + 1 || 0 != clues.GetLowerBound(0)
-        || 0 != clues.GetLowerBound(1))
+          || 0 != clues.GetLowerBound(1))
       {
         throw new ArgumentException("The clue array must be 3 X rowCount");
       }
       Clues = clues;
       var rowCount = clues.GetUpperBound(1) + 1;
       var sideLength = (rowCount + 1)/2;
-      GridRows = new CharSetString[3, rowCount];
+      GridRows = new CharSetString[3,rowCount];
       for (int i = 0; i < sideLength; i++)
       {
         GridRows[0, i] = CharSetString.UnconstrainedStringOfLength(sideLength + i);
@@ -61,7 +61,7 @@ namespace RegexCrossword.HexRegex
 
       // Diagonals
       int diagIdx = 0;
-      for (int xStart = rowCount + sideLength / 2 - 1; xStart >= sideLength / 2; xStart--)
+      for (int xStart = rowCount + sideLength/2 - 1; xStart >= sideLength/2; xStart--)
       {
         var chars = new List<CharSet>();
         for (int y = 0; y < rowCount; y++)
@@ -69,9 +69,8 @@ namespace RegexCrossword.HexRegex
           // how much to offset the row for the hex shape
           var rowStartOffsetX2 = Math.Abs(sideLength - 1 - y);
           // how far along the current horiztonal row this diagonal comes in:
-          var offsetInRow = xStart - (y + rowStartOffsetX2) / 2;
+          var offsetInRow = xStart - (y + rowStartOffsetX2)/2;
 
-          Console.WriteLine("xStart={0} y={1} rowStartOffsetX2={2} offsetInRow={3}", xStart, y, rowStartOffsetX2, offsetInRow);
           if (offsetInRow >= 0 && offsetInRow < GridRows[0, y].Length)
           {
             chars.Add(GridRows[0, y][offsetInRow]);
@@ -141,18 +140,42 @@ namespace RegexCrossword.HexRegex
     }
 
     /// <summary>
-    /// Writes the puzzle state to an html file, highlighting the specified clue row
+    /// Solves the puzzle and writes the solve log to SolveLog
     /// </summary>
-    public void WriteHtml(string filename, int highlightDiag, int highlightClueIdx)
+    public void Solve()
     {
-      var templ = new HexRegexCrosswordHtml
-                    {
-                      Model = this
-                      /*qq,
-                      HighlightDiag = highlightDiag,
-                      HighlightClueIdx = highlightClueIdx*/
-                    };
-      File.WriteAllText(filename, templ.TransformText());
+      SolveLog = new List<SolveStep>();
+      bool changedThisCycle;
+      do
+      {
+        changedThisCycle = false;
+        for (char axis = 'X'; axis <= 'Z'; axis++)
+        {
+          for (int idx = -6; idx <= 6; idx++)
+          {
+            var clue = Clues[axis - 'X', idx + 6];
+            var row = GridRows[axis - 'X', idx + 6];
+
+            var changed = clue.AddConstraints(row);
+            changedThisCycle |= changed;
+            SolveLog.Add(new SolveStep
+                           {
+                             Changed = changed,
+                             InspectedAxis = axis,
+                             InspectedIdx = idx,
+                             NewRowValue = row.ToString()
+                           });
+          }
+        }
+      } while (changedThisCycle);
+    }
+
+    public struct SolveStep
+    {
+      public char InspectedAxis;
+      public int InspectedIdx;
+      public string NewRowValue;
+      public bool Changed;
     }
   }
 }

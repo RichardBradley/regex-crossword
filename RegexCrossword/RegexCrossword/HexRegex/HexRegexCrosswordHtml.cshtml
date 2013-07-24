@@ -1,6 +1,7 @@
 ﻿@* Generator : Template TypeVisibility : Internal *@
 @using System
 @using HexRegex
+@using System.Web.Script.Serialization
 @functions  {
     public HexRegexCrossword Model { get; set; }
 }
@@ -10,6 +11,11 @@
             
             body {
                 overflow-x: hidden;
+                font-size: 14px;
+            }
+
+            div {
+                font-size: 14px;
             }
 
             #container {
@@ -27,6 +33,7 @@
             .hexagon {
                 width: 2em;
                 text-align: center;
+                overflow: hidden;
             }
 
             .clue {
@@ -37,10 +44,25 @@
 
             .clue.x {
                 transform: rotate(240deg);
+                -webkit-transform: rotate(240deg);
             }
 
             .clue.y {
                 transform: rotate(120deg);
+                -webkit-transform: rotate(120deg);
+            }
+
+            .clue.current span {
+                background-color: #b3d4fc;
+            }
+
+            .clue.current.changed span {
+                background-color: #25649F;
+                color: white;
+            }
+
+            #controls {
+                position: absolute;
             }
         </style>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -48,7 +70,10 @@
         <script type="text/javascript">
             // use axial coords http://www.redblobgames.com/grids/hexagons/
             // hexes involved are those for which x,y,z all in [-6,6]
-            // always have x + y + z
+            // always have x + y + z = 0
+
+            var solveLog = @(new JavaScriptSerializer().Serialize(Model.SolveLog));
+            var solveLogIdx = -1; // just before the start
 
             @{ var firstX = true; }
             var hexDataByQR = {
@@ -72,7 +97,7 @@
             var cluesByAxisIdx = {
                 @for (var axis = 'X'; axis <= 'Z'; axis++) {
                     <text>@(axis == 'X' ? "" : ",")"@axis":{</text>
-                    @for (var idx = -6; idx <= 6; idx++) {
+                    for (var idx = -6; idx <= 6; idx++) {
                          <text>@(idx == -6 ? "" : ",")"@idx":"@Model.Clues[axis - 'X',idx + 6]"</text>
                     }
                     <text>}</text>
@@ -80,7 +105,7 @@
             }
 
             var SQRT_3 = Math.sqrt(3);
-            var SIZE = 25;
+            var SIZE = 20;
             var CENTRE_X = SIZE * 18;
             var CENTRE_Y = CENTRE_X;
 
@@ -97,7 +122,72 @@
                 var y = CENTRE_Y + (SIZE * 3.0 / 2.0 * r);
                 return { "x": x, "y": y };
             }
+            
+            function axisIdxOffsetToQR(axis, idx, offset) {
+                var q, r;
+                if (axis == 'X') {
+                    q = idx;
+                    r = Math.min(6, 6 - idx);
+                    r -= offset;
+                } else if (axis == 'Y') {
+                    q = Math.min(6, 6 - idx);
+                    r = Math.max(-6, - 6 - idx);
+                    q -= offset;
+                    r += offset;
+                }
+                return { q: q, r: r };
+            }
 
+            function historyBack() {
+                // qq this isn't right -- need to undo last step?
+                if (solveLogIdx <= 0) {
+                    alert('Already at the start');
+                } else {
+                    showStep(solveLog[--solveLogIdx]);
+                }
+            }
+
+            function historyForward() {
+                if (solveLogIdx >= solveLog.length) {
+                    alert('Already at the end');
+                } else {
+                    showStep(solveLog[++solveLogIdx]);
+                }
+            }
+
+            $(document).keypress(function(event) {
+                if (event.which == 39) {
+                    event.preventDefault();
+                    historyForward();
+                } else if (event.which == 37) {
+                    event.preventDefault();
+                    historyBack();
+                }
+            });
+
+            function showStep(step) {
+                console.log(step);
+
+                $('.clue').removeClass('current changed');
+                // {"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":".......","Changed":false}
+                var clue = cluesByAxisIdx[step.InspectedAxis][step.InspectedIdx];
+                clue.addClass('current');
+                if (step.Changed) clue.addClass('changed');
+
+                var cells = step.NewRowValue.match(/\.|\[[^\]]*\]|[a-z]/g);
+                
+                // now iterate along the clue axis and update the letter
+                for (var offset = 0; offset < cells.length; offset++) {
+                    var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
+                    var cell = hexDataByQR[qr.q][qr.r];
+                    cell.text(cells[offset]);
+                    // qq
+                    //if (step.InspectedAxis == 'Y')
+                    //    cell.text(step.InspectedAxis + "" + step.InspectedIdx + "" + offset);
+                }
+            }
+
+            // The following code sets up the UI
             $(function () {
                 var container = $('#container');
                 var canvas = document.getElementById("canvas").getContext('2d');
@@ -109,6 +199,7 @@
 
                         var div = $("<div />")
                             .addClass('hexagon')
+                            .attr('title', val)
                             .text(val);
                         container.append(div);
                         div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });
@@ -118,9 +209,6 @@
                         canvas.moveTo(xy.x + hexCornerOffsets[0].x, xy.y + hexCornerOffsets[0].y);
                         for (var i = 1; i <= 6; i++) {
                             canvas.lineTo(xy.x + hexCornerOffsets[i].x, xy.y + hexCornerOffsets[i].y);
-                            if (q == 0 && r == 0) {
-                                console.log({ 'x': xy.x + hexCornerOffsets[i].x, 'y': xy.y + hexCornerOffsets[i].y });
-                            }
                         }
                         canvas.stroke();
                     });
@@ -131,7 +219,7 @@
                         var div = $("<div />")
                             .addClass("clue")
                             .addClass(axis)
-                            .text(clue);
+                            .append($('<span />').text(clue))
                         container.append(div);
 
                         // if axis == x
@@ -140,13 +228,14 @@
                         var y = Math.max(-6, - 6 - x) - 0.7;  // min y for x == idx, dec 0.7 to move out of grid
                         var z = - x - y; // fixed
 
+                        var tmp;
                         if (axis == 'Y') {
-                            var tmp = y;
+                            tmp = y;
                             y = x;
                             x = z;
                             z = tmp;
                         } else if (axis == 'Z') {
-                            var tmp = z;
+                            tmp = z;
                             z = x;
                             x = y;
                             y = tmp;
@@ -159,6 +248,10 @@
                         cluesByAxisIdx[axis][idx] = div;
                     });
                 });
+                
+                var xy = hexQRtoPixelXY(-6, 9);
+                var controls = $('#controls');
+                controls.css({ top: xy.y, left: xy.x - controls.width() });
             });
         </script>
     </head>
@@ -166,6 +259,10 @@
         <div id="container">
             <canvas id="canvas" width="1000" height="1000"></canvas>
             <div id="elts"></div>
+            <div id="controls">
+                <button onClick="historyBack()" title="Go one step back">&#x21E6;</button>
+                <button onClick="historyForward()" title="Go one step forward">&#x21E8;</button>
+            </div>
         </div>
     </body>
 </html>

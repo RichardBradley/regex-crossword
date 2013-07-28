@@ -56,34 +56,33 @@ WriteLiteral("\r\n");
 
 
 WriteLiteral("\r\n<html>\r\n    <head>\r\n        <style type=\"text/css\">\r\n            \r\n            " +
-"body {\r\n                overflow-x: hidden;\r\n                font-size: 14px;\r\n " +
-"           }\r\n\r\n            div {\r\n                font-size: 14px;\r\n           " +
-" }\r\n\r\n            #container {\r\n                position: relative;\r\n           " +
-" }\r\n\r\n            .hexagon, .clue {\r\n                display: block;\r\n          " +
-"      padding: 0;\r\n                height: 2em;\r\n                line-height: 2e" +
-"m;\r\n                position: absolute;\r\n            }\r\n            \r\n          " +
-"  .hexagon {\r\n                width: 2em;\r\n                text-align: center;\r\n" +
-"                overflow: hidden;\r\n            }\r\n\r\n            .clue {\r\n       " +
-"         text-align: right;\r\n                width: 20em;\r\n                paddi" +
-"ng-right: 20em;\r\n            }\r\n\r\n            .clue.x {\r\n                transfo" +
-"rm: rotate(240deg);\r\n                -webkit-transform: rotate(240deg);\r\n       " +
-"     }\r\n\r\n            .clue.y {\r\n                transform: rotate(120deg);\r\n   " +
-"             -webkit-transform: rotate(120deg);\r\n            }\r\n\r\n            .c" +
-"lue.current span {\r\n                background-color: #b3d4fc;\r\n            }\r\n\r" +
-"\n            .clue.current.changed span {\r\n                background-color: #25" +
-"649F;\r\n                color: white;\r\n            }\r\n\r\n            #controls {\r\n" +
-"                position: absolute;\r\n            }\r\n        </style>\r\n        <s" +
-"cript type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1." +
-"10.1/jquery.min.js\"></script>\r\n        <script type=\"text/javascript\" src=\"file:" +
-"///E:/Work/DavidLloydABS/reception/public/js/jquery/jquery-1.6.2.min.js\"></scrip" +
-"t>\r\n        <script type=\"text/javascript\">\r\n            // use axial coords htt" +
-"p://www.redblobgames.com/grids/hexagons/\r\n            // hexes involved are thos" +
-"e for which x,y,z all in [-6,6]\r\n            // always have x + y + z = 0\r\n\r\n   " +
-"         var solveLog = ");
+"body {\r\n                overflow-x: hidden;\r\n            }\r\n\r\n            #conta" +
+"iner {\r\n                position: relative;\r\n            }\r\n\r\n            .hexag" +
+"on, .clue {\r\n                display: block;\r\n                padding: 0;\r\n     " +
+"           height: 2em;\r\n                line-height: 2em;\r\n                posi" +
+"tion: absolute;\r\n            }\r\n            \r\n            .hexagon {\r\n          " +
+"      text-align: center;\r\n                overflow: hidden;\r\n                fo" +
+"nt-size: 12px;\r\n            }\r\n\r\n            .clue {\r\n                text-align" +
+": right;\r\n                width: 20em;\r\n                padding-right: 20em;\r\n  " +
+"              font-size: 15px;\r\n            }\r\n\r\n            .clue.x {\r\n        " +
+"        transform: rotate(240deg);\r\n                -webkit-transform: rotate(24" +
+"0deg);\r\n            }\r\n\r\n            .clue.y {\r\n                transform: rotat" +
+"e(120deg);\r\n                -webkit-transform: rotate(120deg);\r\n            }\r\n\r" +
+"\n            .clue.current span {\r\n                background-color: #b3d4fc;\r\n " +
+"           }\r\n\r\n            .clue.current.changed span {\r\n                backgr" +
+"ound-color: #25649F;\r\n                color: white;\r\n            }\r\n\r\n          " +
+"  #controls {\r\n                position: absolute;\r\n            }\r\n        </sty" +
+"le>\r\n        <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax" +
+"/libs/jquery/1.10.1/jquery.min.js\"></script>\r\n        <script type=\"text/javascr" +
+"ipt\" src=\"file:///E:/Work/DavidLloydABS/reception/public/js/jquery/jquery-1.6.2." +
+"min.js\"></script>\r\n        <script type=\"text/javascript\">\r\n            // use a" +
+"xial coords http://www.redblobgames.com/grids/hexagons/\r\n            // hexes in" +
+"volved are those for which x,y,z all in [-6,6]\r\n            // always have x + y" +
+" + z = 0\r\n\r\n            var solveLog = ");
 
 
             
-            #line 75 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 71 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                        Write(new JavaScriptSerializer().Serialize(Model.SolveLog));
 
             
@@ -93,7 +92,7 @@ WriteLiteral(";\r\n            var solveLogIdx = -1; // just before the start\r\
 
 
             
-            #line 78 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 74 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                var firstX = true; 
 
             
@@ -103,7 +102,7 @@ WriteLiteral("            var hexDataByQR = {\r\n");
 
 
             
-            #line 80 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 76 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
              for (int x = -6; x <= 6; x++)
             {
 
@@ -114,7 +113,7 @@ WriteLiteral("                ");
 
 
             
-            #line 82 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 78 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                   Write(firstX ? "" : ",");
 
             
@@ -124,7 +123,7 @@ WriteLiteral(" \"");
 
 
             
-            #line 82 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 78 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                        Write(x);
 
             
@@ -136,7 +135,7 @@ WriteLiteral("\r\n");
 
 
             
-            #line 83 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 79 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                 firstX = false;
                 var firstZ = true;
                 for (int y = -6; y <= 6; y++)
@@ -152,7 +151,7 @@ WriteLiteral("                        ");
 
 
             
-            #line 90 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 86 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                           Write(firstZ ? "" : ",");
 
             
@@ -162,7 +161,7 @@ WriteLiteral(" \"");
 
 
             
-            #line 90 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 86 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                Write(z);
 
             
@@ -172,7 +171,7 @@ WriteLiteral("\" : \"");
 
 
             
-            #line 90 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 86 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                       Write(x);
 
             
@@ -182,7 +181,7 @@ WriteLiteral(",");
 
 
             
-            #line 90 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 86 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                          Write(z);
 
             
@@ -194,7 +193,7 @@ WriteLiteral("\r\n");
 
 
             
-            #line 91 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 87 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                         firstZ = false;
                     }
                 }
@@ -210,7 +209,7 @@ WriteLiteral("\r\n");
 
 
             
-            #line 95 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 91 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
             }
 
             
@@ -220,7 +219,7 @@ WriteLiteral("            };\r\n            var cluesByAxisIdx = {\r\n");
 
 
             
-            #line 98 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 94 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                  for (var axis = 'X'; axis <= 'Z'; axis++) {
 
             
@@ -230,7 +229,7 @@ WriteLiteral("                    ");
 
 
             
-            #line 99 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 95 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                       Write(axis == 'X' ? "" : ",");
 
             
@@ -240,7 +239,7 @@ WriteLiteral("\"");
 
 
             
-            #line 99 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 95 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                Write(axis);
 
             
@@ -252,7 +251,7 @@ WriteLiteral("\r\n");
 
 
             
-            #line 100 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 96 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                     for (var idx = -6; idx <= 6; idx++) {
 
             
@@ -262,7 +261,7 @@ WriteLiteral("                         ");
 
 
             
-            #line 101 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 97 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                            Write(idx == -6 ? "" : ",");
 
             
@@ -272,7 +271,7 @@ WriteLiteral("\"");
 
 
             
-            #line 101 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 97 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                   Write(idx);
 
             
@@ -282,7 +281,7 @@ WriteLiteral("\":\"");
 
 
             
-            #line 101 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 97 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                                                          Write(Model.Clues[axis - 'X',idx + 6]);
 
             
@@ -294,7 +293,7 @@ WriteLiteral("\r\n");
 
 
             
-            #line 102 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 98 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                     }
 
             
@@ -308,96 +307,111 @@ WriteLiteral("\r\n");
 
 
             
-            #line 104 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
+            #line 100 "..\..\HexRegex\HexRegexCrosswordHtml.cshtml"
                 }
 
             
             #line default
             #line hidden
-WriteLiteral("            }\r\n\r\n            var SQRT_3 = Math.sqrt(3);\r\n            var SIZE = 2" +
-"0;\r\n            var CENTRE_X = SIZE * 18;\r\n            var CENTRE_Y = CENTRE_X;\r" +
-"\n\r\n            var hexCornerOffsets = [];\r\n            for (var i = 0; i <= 6; i" +
-"++) {\r\n                var angle = 2 * Math.PI / 6 * (i + 0.5);\r\n               " +
-" var x_i = SIZE * Math.cos(angle);\r\n                var y_i = SIZE * Math.sin(an" +
-"gle);\r\n                hexCornerOffsets[i] = { \'x\': x_i, \'y\': y_i };\r\n          " +
-"  }\r\n\r\n            function hexQRtoPixelXY(q, r) {\r\n                var x = CENT" +
-"RE_X + (SIZE * SQRT_3 * (q + r / 2.0));\r\n                var y = CENTRE_Y + (SIZ" +
-"E * 3.0 / 2.0 * r);\r\n                return { \"x\": x, \"y\": y };\r\n            }\r\n" +
-"            \r\n            function axisIdxOffsetToQR(axis, idx, offset) {\r\n     " +
-"           var q, r;\r\n                if (axis == \'X\') {\r\n                    q " +
-"= idx;\r\n                    r = Math.min(6, 6 - idx);\r\n                    r -= " +
-"offset;\r\n                } else if (axis == \'Y\') {\r\n                    q = Math" +
-".min(6, 6 - idx);\r\n                    r = Math.max(-6, - 6 - idx);\r\n           " +
-"         q -= offset;\r\n                    r += offset;\r\n                }\r\n    " +
-"            return { q: q, r: r };\r\n            }\r\n\r\n            function histor" +
-"yBack() {\r\n                // qq this isn\'t right -- need to undo last step?\r\n  " +
-"              if (solveLogIdx <= 0) {\r\n                    alert(\'Already at the" +
-" start\');\r\n                } else {\r\n                    showStep(solveLog[--sol" +
-"veLogIdx]);\r\n                }\r\n            }\r\n\r\n            function historyFor" +
-"ward() {\r\n                if (solveLogIdx >= solveLog.length) {\r\n               " +
-"     alert(\'Already at the end\');\r\n                } else {\r\n                   " +
-" showStep(solveLog[++solveLogIdx]);\r\n                }\r\n            }\r\n\r\n       " +
-"     $(document).keypress(function(event) {\r\n                if (event.which == " +
-"39) {\r\n                    event.preventDefault();\r\n                    historyF" +
-"orward();\r\n                } else if (event.which == 37) {\r\n                    " +
-"event.preventDefault();\r\n                    historyBack();\r\n                }\r\n" +
-"            });\r\n\r\n            function showStep(step) {\r\n                consol" +
-"e.log(step);\r\n\r\n                $(\'.clue\').removeClass(\'current changed\');\r\n    " +
-"            // {\"InspectedAxis\":\"X\",\"InspectedIdx\":-6,\"NewRowValue\":\".......\",\"C" +
-"hanged\":false}\r\n                var clue = cluesByAxisIdx[step.InspectedAxis][st" +
-"ep.InspectedIdx];\r\n                clue.addClass(\'current\');\r\n                if" +
-" (step.Changed) clue.addClass(\'changed\');\r\n\r\n                var cells = step.Ne" +
-"wRowValue.match(/\\.|\\[[^\\]]*\\]|[a-z]/g);\r\n                \r\n                // n" +
-"ow iterate along the clue axis and update the letter\r\n                for (var o" +
-"ffset = 0; offset < cells.length; offset++) {\r\n                    var qr = axis" +
-"IdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);\r\n                 " +
-"   var cell = hexDataByQR[qr.q][qr.r];\r\n                    cell.text(cells[offs" +
-"et]);\r\n                    // qq\r\n                    //if (step.InspectedAxis =" +
-"= \'Y\')\r\n                    //    cell.text(step.InspectedAxis + \"\" + step.Inspe" +
-"ctedIdx + \"\" + offset);\r\n                }\r\n            }\r\n\r\n            // The " +
-"following code sets up the UI\r\n            $(function () {\r\n                var " +
-"container = $(\'#container\');\r\n                var canvas = document.getElementBy" +
-"Id(\"canvas\").getContext(\'2d\');\r\n                $.each(hexDataByQR, function (q," +
-" rs) {\r\n                    q = q - 0;\r\n                    $.each(rs, function " +
-"(r, val) {\r\n                        r = r - 0;\r\n                        var xy =" +
-" hexQRtoPixelXY(q, r);\r\n\r\n                        var div = $(\"<div />\")\r\n      " +
-"                      .addClass(\'hexagon\')\r\n                            .attr(\'t" +
-"itle\', val)\r\n                            .text(val);\r\n                        co" +
-"ntainer.append(div);\r\n                        div.css({ top: xy.y - div.height()" +
-" / 2, left: xy.x - div.width() / 2 });\r\n                        hexDataByQR[q][r" +
-"] = div;\r\n\r\n                        canvas.beginPath();\r\n                       " +
-" canvas.moveTo(xy.x + hexCornerOffsets[0].x, xy.y + hexCornerOffsets[0].y);\r\n   " +
-"                     for (var i = 1; i <= 6; i++) {\r\n                           " +
-" canvas.lineTo(xy.x + hexCornerOffsets[i].x, xy.y + hexCornerOffsets[i].y);\r\n   " +
-"                     }\r\n                        canvas.stroke();\r\n              " +
-"      });\r\n                });\r\n                $.each(cluesByAxisIdx, function " +
-"(axis, cluesByIdx) {\r\n                    $.each(cluesByIdx, function (idx, clue" +
-") {\r\n                        idx = idx - 0;\r\n                        var div = $" +
-"(\"<div />\")\r\n                            .addClass(\"clue\")\r\n                    " +
-"        .addClass(axis)\r\n                            .append($(\'<span />\').text(" +
-"clue))\r\n                        container.append(div);\r\n\r\n                      " +
-"  // if axis == x\r\n                        // x,y,z here are hex cube coords\r\n  " +
-"                      var x = idx;\r\n                        var y = Math.max(-6," +
-" - 6 - x) - 0.7;  // min y for x == idx, dec 0.7 to move out of grid\r\n          " +
-"              var z = - x - y; // fixed\r\n\r\n                        var tmp;\r\n   " +
-"                     if (axis == \'Y\') {\r\n                            tmp = y;\r\n " +
-"                           y = x;\r\n                            x = z;\r\n         " +
-"                   z = tmp;\r\n                        } else if (axis == \'Z\') {\r\n" +
-"                            tmp = z;\r\n                            z = x;\r\n      " +
-"                      x = y;\r\n                            y = tmp;\r\n            " +
-"            }\r\n\r\n                        // xy is pixel coords\r\n                " +
-"        var xy = hexQRtoPixelXY(x, z);\r\n\r\n                        div.css({ top:" +
-" xy.y - div.height() / 2, left: xy.x - div.width() });\r\n                        " +
-"cluesByAxisIdx[axis][idx] = div;\r\n                    });\r\n                });\r\n" +
-"                \r\n                var xy = hexQRtoPixelXY(-6, 9);\r\n             " +
-"   var controls = $(\'#controls\');\r\n                controls.css({ top: xy.y, lef" +
-"t: xy.x - controls.width() });\r\n            });\r\n        </script>\r\n    </head>\r" +
-"\n    <body>\r\n        <div id=\"container\">\r\n            <canvas id=\"canvas\" width" +
-"=\"1000\" height=\"1000\"></canvas>\r\n            <div id=\"elts\"></div>\r\n            " +
-"<div id=\"controls\">\r\n                <button onClick=\"historyBack()\" title=\"Go o" +
-"ne step back\">&#x21E6;</button>\r\n                <button onClick=\"historyForward" +
-"()\" title=\"Go one step forward\">&#x21E8;</button>\r\n            </div>\r\n        <" +
-"/div>\r\n    </body>\r\n</html>\r\n");
+WriteLiteral("            };\r\n\r\n            var SQRT_3 = Math.sqrt(3);\r\n            // SIZE is " +
+"the edge length of a single hex\r\n            var SIZE = 25;\r\n            var CEN" +
+"TRE_X = SIZE * 18;\r\n            var CENTRE_Y = CENTRE_X;\r\n\r\n            var hexC" +
+"ornerOffsets = [];\r\n            for (var i = 0; i <= 6; i++) {\r\n                " +
+"var angle = 2 * Math.PI / 6 * (i + 0.5);\r\n                var x_i = SIZE * Math." +
+"cos(angle);\r\n                var y_i = SIZE * Math.sin(angle);\r\n                " +
+"hexCornerOffsets[i] = { \'x\': x_i, \'y\': y_i };\r\n            }\r\n\r\n            func" +
+"tion hexQRtoPixelXY(q, r) {\r\n                var x = CENTRE_X + (SIZE * SQRT_3 *" +
+" (q + r / 2.0));\r\n                var y = CENTRE_Y + (SIZE * 3.0 / 2.0 * r);\r\n  " +
+"              return { \"x\": x, \"y\": y };\r\n            }\r\n            \r\n         " +
+"   // See HexRegexCrossword.AxisIdxOffsetToQR\r\n            function axisIdxOffse" +
+"tToQR(axis, idx, offset) {\r\n                var q, r;\r\n                if (axis " +
+"== \'X\') {\r\n                    q = idx;\r\n                    r = Math.min(6, 6 -" +
+" idx);\r\n                    r -= offset;\r\n                } else if (axis == \'Y\'" +
+") {\r\n                    q = Math.min(6, 6 - idx);\r\n                    r = Math" +
+".max(-6, - 6 - idx);\r\n                    q -= offset;\r\n                    r +=" +
+" offset;\r\n                } else { // axis == \'Z\'\r\n                    q = Math." +
+"max(-6, -6 - idx);\r\n                    r = idx;\r\n                    q += offse" +
+"t;\r\n                }\r\n                return { q: q, r: r };\r\n            }\r\n\r\n" +
+"            function historyBack() {\r\n                if (solveLogIdx <= 0) {\r\n " +
+"                   alert(\'Already at the start\');\r\n                } else {\r\n   " +
+"                 revertStep(solveLog[solveLogIdx]);\r\n                    showSte" +
+"p(solveLog[--solveLogIdx]);\r\n                }\r\n            }\r\n\r\n            fun" +
+"ction historyForward() {\r\n                if (solveLogIdx >= solveLog.length) {\r" +
+"\n                    alert(\'Already at the end\');\r\n                } else {\r\n   " +
+"                 showStep(solveLog[++solveLogIdx]);\r\n                }\r\n        " +
+"    }\r\n\r\n            $(document).keypress(function(event) {\r\n                if " +
+"(event.which == 39) {\r\n                    event.preventDefault();\r\n            " +
+"        historyForward();\r\n                } else if (event.which == 37) {\r\n    " +
+"                event.preventDefault();\r\n                    historyBack();\r\n   " +
+"             }\r\n            });\r\n\r\n            function showStep(step) {\r\n      " +
+"          console.log(step);\r\n\r\n                $(\'.clue\').removeClass(\'current " +
+"changed\');\r\n\r\n                // {\"InspectedAxis\":\"X\",\"InspectedIdx\":-6,\"NewRowV" +
+"alue\":\".......\",\"Changed\":false}\r\n                var clue = cluesByAxisIdx[step" +
+".InspectedAxis][step.InspectedIdx];\r\n                clue.addClass(\'current\');\r\n" +
+"                if (step.Changed) clue.addClass(\'changed\');\r\n\r\n                v" +
+"ar cells = step.NewRowValue.match(/\\.|\\[[^\\]]*\\]|[A-Z]/g);\r\n\r\n                //" +
+" store the old cells, if necessary, to support the back button:\r\n               " +
+" var storeOldValues = false;\r\n                if (!step.OldRowValues) {\r\n       " +
+"             step.OldRowValues = [];\r\n                    storeOldValues = true;" +
+"\r\n                }\r\n                \r\n                // now iterate along the " +
+"clue axis and update the letter\r\n                for (var offset = 0; offset < c" +
+"ells.length; offset++) {\r\n                    var qr = axisIdxOffsetToQR(step.In" +
+"spectedAxis, step.InspectedIdx, offset);\r\n                    var cell = hexData" +
+"ByQR[qr.q][qr.r];\r\n\r\n                    var oldVal = cell.text();\r\n            " +
+"        var newVal = cells[offset];\r\n                    if (oldVal !== newVal) " +
+"{\r\n                        console.log(\"Cell q = \" + qr.q + \", r = \" + qr.r + \" " +
+"changed from \'\" +\r\n                            oldVal + \"\' to \'\" + newVal + \"\'\")" +
+";\r\n                    }\r\n\r\n                    if (storeOldValues) {\r\n         " +
+"               step.OldRowValues[offset] = oldVal;\r\n                    }\r\n\r\n   " +
+"                 cell.text(newVal);\r\n                }\r\n            }\r\n\r\n       " +
+"     function revertStep(step) {\r\n                for (var offset = 0; offset < " +
+"step.OldRowValues.length; offset++) {\r\n                    var qr = axisIdxOffse" +
+"tToQR(step.InspectedAxis, step.InspectedIdx, offset);\r\n                    var c" +
+"ell = hexDataByQR[qr.q][qr.r];\r\n                    cell.text(step.OldRowValues[" +
+"offset]);\r\n                }\r\n            }\r\n\r\n            // The following code" +
+" sets up the UI\r\n            $(function () {\r\n                var container = $(" +
+"\'#container\');\r\n                var canvas = document.getElementById(\"canvas\").g" +
+"etContext(\'2d\');\r\n                $.each(hexDataByQR, function (q, rs) {\r\n      " +
+"              q = q - 0;\r\n                    $.each(rs, function (r, val) {\r\n  " +
+"                      r = r - 0;\r\n                        var xy = hexQRtoPixelX" +
+"Y(q, r);\r\n\r\n                        var div = $(\"<div />\")\r\n                    " +
+"        .addClass(\'hexagon\')\r\n                            .attr(\'title\', val)\r\n " +
+"                           .text(val);\r\n                        container.append" +
+"(div);\r\n                        div.width(SQRT_3 * SIZE);\r\n                     " +
+"   div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });\r\n   " +
+"                     hexDataByQR[q][r] = div;\r\n\r\n                        canvas." +
+"beginPath();\r\n                        canvas.moveTo(xy.x + hexCornerOffsets[0].x" +
+", xy.y + hexCornerOffsets[0].y);\r\n                        for (var i = 1; i <= 6" +
+"; i++) {\r\n                            canvas.lineTo(xy.x + hexCornerOffsets[i].x" +
+", xy.y + hexCornerOffsets[i].y);\r\n                        }\r\n                   " +
+"     canvas.stroke();\r\n                    });\r\n                });\r\n           " +
+"     $.each(cluesByAxisIdx, function (axis, cluesByIdx) {\r\n                    $" +
+".each(cluesByIdx, function (idx, clue) {\r\n                        idx = idx - 0;" +
+"\r\n                        var div = $(\"<div />\")\r\n                            .a" +
+"ddClass(\"clue\")\r\n                            .addClass(axis)\r\n                  " +
+"          .append($(\'<span />\').text(clue))\r\n                        container.a" +
+"ppend(div);\r\n\r\n                        // if axis == x\r\n                        " +
+"// x,y,z here are hex cube coords\r\n                        var x = idx;\r\n       " +
+"                 var y = Math.max(-6, - 6 - x) - 0.7;  // min y for x == idx, de" +
+"c 0.7 to move out of grid\r\n                        var z = - x - y; // fixed\r\n\r\n" +
+"                        var tmp;\r\n                        if (axis == \'Y\') {\r\n  " +
+"                          tmp = y;\r\n                            y = x;\r\n        " +
+"                    x = z;\r\n                            z = tmp;\r\n              " +
+"          } else if (axis == \'Z\') {\r\n                            tmp = z;\r\n     " +
+"                       z = x;\r\n                            x = y;\r\n             " +
+"               y = tmp;\r\n                        }\r\n\r\n                        //" +
+" xy is pixel coords\r\n                        var xy = hexQRtoPixelXY(x, z);\r\n\r\n " +
+"                       div.css({ top: xy.y - div.height() / 2, left: xy.x - div." +
+"width() });\r\n                        cluesByAxisIdx[axis][idx] = div;\r\n         " +
+"           });\r\n                });\r\n                \r\n                var xy = " +
+"hexQRtoPixelXY(-6, 9);\r\n                var controls = $(\'#controls\');\r\n        " +
+"        controls.css({ top: xy.y, left: xy.x - controls.width() });\r\n           " +
+" });\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <div id=\"container\">\r\n" +
+"            <canvas id=\"canvas\" width=\"1000\" height=\"1000\"></canvas>\r\n          " +
+"  <div id=\"elts\"></div>\r\n            <div id=\"controls\">\r\n                <butto" +
+"n onClick=\"historyBack()\" title=\"Go one step back\">&#x21E6;</button>\r\n          " +
+"      <button onClick=\"historyForward()\" title=\"Go one step forward\">&#x21E8;</b" +
+"utton>\r\n            </div>\r\n        </div>\r\n    </body>\r\n</html>\r\n");
 
 
         }

@@ -29,6 +29,9 @@ namespace RegexCrossword.HexRegex
     /// </summary>
     public CharSetString[,] GridRows;
 
+    public int RowCount;
+    public int SideLength;
+
     /// <summary>
     /// The clues, viewed in each of the 3 directions, as a list
     /// of regexes.
@@ -37,6 +40,7 @@ namespace RegexCrossword.HexRegex
     public Regex[,] Clues;
 
     public List<SolveStep> SolveLog;
+    private CharSet[,] _cellsByQROffsetBySideLength;
 
     /// <param name="clues">
     ///  The clues as a 3xN grid
@@ -49,36 +53,83 @@ namespace RegexCrossword.HexRegex
         throw new ArgumentException("The clue array must be 3 X rowCount");
       }
       Clues = clues;
-      var rowCount = clues.GetUpperBound(1) + 1;
-      var sideLength = (rowCount + 1)/2;
-      GridRows = new CharSetString[3,rowCount];
-      for (int i = 0; i < sideLength; i++)
-      {
-        GridRows[0, i] = CharSetString.UnconstrainedStringOfLength(sideLength + i);
-        GridRows[0, rowCount - 1 - i] = CharSetString.UnconstrainedStringOfLength(sideLength + i);
-      }
-      GridRows[0, sideLength] = CharSetString.UnconstrainedStringOfLength(rowCount);
 
-      // Diagonals
-      int diagIdx = 0;
-      for (int xStart = rowCount + sideLength/2 - 1; xStart >= sideLength/2; xStart--)
+      RowCount = clues.GetUpperBound(1) + 1;
+      SideLength = (RowCount + 1)/2;
+      GridRows = new CharSetString[3, RowCount];
+      // Build up a grid of cells by Q/R.
+      // The max coord will be < +/- sideLength
+      // Since coords may be negative, this array is offset by +sideLength
+      _cellsByQROffsetBySideLength = new CharSet[2 * SideLength, 2 * SideLength];
+
+      for (int axis = 0; axis < 3; axis++)
       {
-        var chars = new List<CharSet>();
-        for (int y = 0; y < rowCount; y++)
+        for (int idx = -(SideLength - 1); idx <= (SideLength - 1); idx++)
         {
-          // how much to offset the row for the hex shape
-          var rowStartOffsetX2 = Math.Abs(sideLength - 1 - y);
-          // how far along the current horiztonal row this diagonal comes in:
-          var offsetInRow = xStart - (y + rowStartOffsetX2)/2;
-
-          if (offsetInRow >= 0 && offsetInRow < GridRows[0, y].Length)
+          var row = new List<CharSet>();
+          for (int offset = 0;; offset++)
           {
-            chars.Add(GridRows[0, y][offsetInRow]);
+            var qr = AxisIdxOffsetToQR(axis, idx, offset);
+            var cell = GetCellByQR(qr);
+            if (cell == null) // qr is out of range
+            {
+              break;
+            }
+            row.Add(cell);
           }
+          GridRows[axis, idx + (SideLength - 1)] = new CharSetString(row);
         }
-        GridRows[1, diagIdx] = new CharSetString(chars);
-        diagIdx++;
       }
+    }
+
+    /// <summary>
+    /// See HexRegexCrosswordHtml.cshtml::axisIdxOffsetToQR
+    /// </summary>
+    private Tuple<int, int> AxisIdxOffsetToQR(int axis, int idx, int offset)
+    {
+      int q, r;
+      var sideLengthM1 = SideLength - 1;
+      if (axis == 0)
+      {
+        // X
+        q = idx;
+        r = Math.Min(sideLengthM1, sideLengthM1 - idx);
+        r -= offset;
+      }
+      else if (axis == 1)
+      {
+        // Y
+        q = Math.Min(sideLengthM1, sideLengthM1 - idx);
+        r = Math.Max(-sideLengthM1, -sideLengthM1 - idx);
+        q -= offset;
+        r += offset;
+      }
+      else
+      {
+        // axis == 'Z'
+        q = Math.Max(-sideLengthM1, -sideLengthM1 - idx);
+        r = idx;
+        q += offset;
+      }
+      return new Tuple<int, int>(q, r);
+    }
+
+    private CharSet GetCellByQR(Tuple<int,int> qr)
+    {
+      if (Math.Abs(qr.Item1) >= SideLength
+        || Math.Abs(qr.Item2) >= SideLength
+        || Math.Abs(qr.Item1 + qr.Item2) >= SideLength)
+      {
+        return null;
+      }
+
+      var qOffset = qr.Item1 + SideLength;
+      var rOffset = qr.Item2 + SideLength;
+      if (null == _cellsByQROffsetBySideLength[qOffset, rOffset])
+      {
+        _cellsByQROffsetBySideLength[qOffset, rOffset] = CharSet.Any();
+      }
+      return _cellsByQROffsetBySideLength[qOffset, rOffset];
     }
 
     /// <summary>
@@ -156,6 +207,8 @@ namespace RegexCrossword.HexRegex
             var clue = Clues[axis - 'X', idx + 6];
             var row = GridRows[axis - 'X', idx + 6];
 
+            try
+            {
             var changed = clue.AddConstraints(row);
             changedThisCycle |= changed;
             SolveLog.Add(new SolveStep
@@ -165,6 +218,17 @@ namespace RegexCrossword.HexRegex
                              InspectedIdx = idx,
                              NewRowValue = row.ToString()
                            });
+            }
+            catch (Exception e)
+            {
+              throw new Exception(
+                string.Format("For {0}{1}, '{2}': {3}",
+                  axis,
+                  idx,
+                  clue,
+                  e.Message),
+                e);
+            }
           }
         }
       } while (changedThisCycle);

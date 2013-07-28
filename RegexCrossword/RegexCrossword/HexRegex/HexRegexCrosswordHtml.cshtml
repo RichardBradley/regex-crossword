@@ -11,11 +11,6 @@
             
             body {
                 overflow-x: hidden;
-                font-size: 14px;
-            }
-
-            div {
-                font-size: 14px;
             }
 
             #container {
@@ -31,15 +26,16 @@
             }
             
             .hexagon {
-                width: 2em;
                 text-align: center;
                 overflow: hidden;
+                font-size: 12px;
             }
 
             .clue {
                 text-align: right;
                 width: 20em;
                 padding-right: 20em;
+                font-size: 15px;
             }
 
             .clue.x {
@@ -102,10 +98,11 @@
                     }
                     <text>}</text>
                 }
-            }
+            };
 
             var SQRT_3 = Math.sqrt(3);
-            var SIZE = 20;
+            // SIZE is the edge length of a single hex
+            var SIZE = 25;
             var CENTRE_X = SIZE * 18;
             var CENTRE_Y = CENTRE_X;
 
@@ -123,6 +120,7 @@
                 return { "x": x, "y": y };
             }
             
+            // See HexRegexCrossword.AxisIdxOffsetToQR
             function axisIdxOffsetToQR(axis, idx, offset) {
                 var q, r;
                 if (axis == 'X') {
@@ -134,15 +132,19 @@
                     r = Math.max(-6, - 6 - idx);
                     q -= offset;
                     r += offset;
+                } else { // axis == 'Z'
+                    q = Math.max(-6, -6 - idx);
+                    r = idx;
+                    q += offset;
                 }
                 return { q: q, r: r };
             }
 
             function historyBack() {
-                // qq this isn't right -- need to undo last step?
                 if (solveLogIdx <= 0) {
                     alert('Already at the start');
                 } else {
+                    revertStep(solveLog[solveLogIdx]);
                     showStep(solveLog[--solveLogIdx]);
                 }
             }
@@ -169,21 +171,46 @@
                 console.log(step);
 
                 $('.clue').removeClass('current changed');
+
                 // {"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":".......","Changed":false}
                 var clue = cluesByAxisIdx[step.InspectedAxis][step.InspectedIdx];
                 clue.addClass('current');
                 if (step.Changed) clue.addClass('changed');
 
-                var cells = step.NewRowValue.match(/\.|\[[^\]]*\]|[a-z]/g);
+                var cells = step.NewRowValue.match(/\.|\[[^\]]*\]|[A-Z]/g);
+
+                // store the old cells, if necessary, to support the back button:
+                var storeOldValues = false;
+                if (!step.OldRowValues) {
+                    step.OldRowValues = [];
+                    storeOldValues = true;
+                }
                 
                 // now iterate along the clue axis and update the letter
                 for (var offset = 0; offset < cells.length; offset++) {
                     var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
                     var cell = hexDataByQR[qr.q][qr.r];
-                    cell.text(cells[offset]);
-                    // qq
-                    //if (step.InspectedAxis == 'Y')
-                    //    cell.text(step.InspectedAxis + "" + step.InspectedIdx + "" + offset);
+
+                    var oldVal = cell.text();
+                    var newVal = cells[offset];
+                    if (oldVal !== newVal) {
+                        console.log("Cell q = " + qr.q + ", r = " + qr.r + " changed from '" +
+                            oldVal + "' to '" + newVal + "'");
+                    }
+
+                    if (storeOldValues) {
+                        step.OldRowValues[offset] = oldVal;
+                    }
+
+                    cell.text(newVal);
+                }
+            }
+
+            function revertStep(step) {
+                for (var offset = 0; offset < step.OldRowValues.length; offset++) {
+                    var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
+                    var cell = hexDataByQR[qr.q][qr.r];
+                    cell.text(step.OldRowValues[offset]);
                 }
             }
 
@@ -202,6 +229,7 @@
                             .attr('title', val)
                             .text(val);
                         container.append(div);
+                        div.width(SQRT_3 * SIZE);
                         div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });
                         hexDataByQR[q][r] = div;
 

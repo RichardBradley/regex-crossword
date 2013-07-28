@@ -8,7 +8,9 @@ namespace RegexCrossword
   {
     static void Main(string[] args)
     {
-      Solve("MITMysteryHunt2013", HexRegexCrossword.MITMysteryHunt2013());
+      Solve(
+        "MITMysteryHunt2013",
+        HexRegexCrossword.MITMysteryHunt2013());
       //Console.ReadLine();
     }
 

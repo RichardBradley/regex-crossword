@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="CharSetStringTest.cs" />
     <Compile Include="ExceptionAssert.cs" />
+    <Compile Include="HexRegex\HexRegexCrosswordTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="regex\PrettyPrintingTest.cs" />
     <Compile Include="regex\RegexTest.cs" />

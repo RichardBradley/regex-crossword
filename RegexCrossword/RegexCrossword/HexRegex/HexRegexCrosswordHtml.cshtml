@@ -28,14 +28,14 @@
             .hexagon {
                 text-align: center;
                 overflow: hidden;
-                font-size: 12px;
+                font-size: 16px;
             }
 
             .clue {
                 text-align: right;
                 width: 20em;
                 padding-right: 20em;
-                font-size: 15px;
+                font-size: 18px;
             }
 
             .clue.x {
@@ -61,8 +61,8 @@
                 position: absolute;
             }
         </style>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script type="text/javascript" src="file:///E:/Work/DavidLloydABS/reception/public/js/jquery/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="file:///C:/Documents%20and%20Settings/rtb/Documents/personal/src/regex-crossword/RegexCrossword/RegexCrossword/bin/Debug/lib/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="file:///C:/Documents%20and%20Settings/rtb/Documents/personal/src/regex-crossword/RegexCrossword/RegexCrossword/bin/Debug/lib/jquery.quickfit.js"></script>
         <script type="text/javascript">
             // use axial coords http://www.redblobgames.com/grids/hexagons/
             // hexes involved are those for which x,y,z all in [-6,6]
@@ -150,7 +150,7 @@
             }
 
             function historyForward() {
-                if (solveLogIdx >= solveLog.length) {
+                if (solveLogIdx + 1 >= solveLog.length) {
                     alert('Already at the end');
                 } else {
                     showStep(solveLog[++solveLogIdx]);
@@ -193,16 +193,18 @@
 
                     var oldVal = cell.text();
                     var newVal = cells[offset];
-                    if (oldVal !== newVal) {
-                        console.log("Cell q = " + qr.q + ", r = " + qr.r + " changed from '" +
-                            oldVal + "' to '" + newVal + "'");
-                    }
 
                     if (storeOldValues) {
                         step.OldRowValues[offset] = oldVal;
                     }
 
-                    cell.text(newVal);
+                    if (oldVal !== newVal) {
+                        console.log("Cell q = " + qr.q + ", r = " + qr.r + " changed from '" +
+                            oldVal + "' to '" + newVal + "'");
+
+                        cell.text(newVal);
+                        cell.quickfit();
+                    }
                 }
             }
 
@@ -210,7 +212,11 @@
                 for (var offset = 0; offset < step.OldRowValues.length; offset++) {
                     var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
                     var cell = hexDataByQR[qr.q][qr.r];
-                    cell.text(step.OldRowValues[offset]);
+                    var newVal = step.OldRowValues[offset];
+                    if (cell.text() !== newVal) {
+                        cell.text(newVal);
+                        cell.quickfit();
+                    }
                 }
             }
 
@@ -226,8 +232,7 @@
 
                         var div = $("<div />")
                             .addClass('hexagon')
-                            .attr('title', val)
-                            .text(val);
+                            .attr('title', val);
                         container.append(div);
                         div.width(SQRT_3 * SIZE);
                         div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });

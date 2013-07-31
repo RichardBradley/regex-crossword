@@ -62,9 +62,9 @@ WriteLiteral("\r\n<html>\r\n    <head>\r\n        <style type=\"text/css\">\r\n 
 "           height: 2em;\r\n                line-height: 2em;\r\n                posi" +
 "tion: absolute;\r\n            }\r\n            \r\n            .hexagon {\r\n          " +
 "      text-align: center;\r\n                overflow: hidden;\r\n                fo" +
-"nt-size: 12px;\r\n            }\r\n\r\n            .clue {\r\n                text-align" +
+"nt-size: 16px;\r\n            }\r\n\r\n            .clue {\r\n                text-align" +
 ": right;\r\n                width: 20em;\r\n                padding-right: 20em;\r\n  " +
-"              font-size: 15px;\r\n            }\r\n\r\n            .clue.x {\r\n        " +
+"              font-size: 18px;\r\n            }\r\n\r\n            .clue.x {\r\n        " +
 "        transform: rotate(240deg);\r\n                -webkit-transform: rotate(24" +
 "0deg);\r\n            }\r\n\r\n            .clue.y {\r\n                transform: rotat" +
 "e(120deg);\r\n                -webkit-transform: rotate(120deg);\r\n            }\r\n\r" +
@@ -72,13 +72,15 @@ WriteLiteral("\r\n<html>\r\n    <head>\r\n        <style type=\"text/css\">\r\n 
 "           }\r\n\r\n            .clue.current.changed span {\r\n                backgr" +
 "ound-color: #25649F;\r\n                color: white;\r\n            }\r\n\r\n          " +
 "  #controls {\r\n                position: absolute;\r\n            }\r\n        </sty" +
-"le>\r\n        <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax" +
-"/libs/jquery/1.10.1/jquery.min.js\"></script>\r\n        <script type=\"text/javascr" +
-"ipt\" src=\"file:///E:/Work/DavidLloydABS/reception/public/js/jquery/jquery-1.6.2." +
-"min.js\"></script>\r\n        <script type=\"text/javascript\">\r\n            // use a" +
-"xial coords http://www.redblobgames.com/grids/hexagons/\r\n            // hexes in" +
-"volved are those for which x,y,z all in [-6,6]\r\n            // always have x + y" +
-" + z = 0\r\n\r\n            var solveLog = ");
+"le>\r\n        <script type=\"text/javascript\" src=\"file:///C:/Documents%20and%20Se" +
+"ttings/rtb/Documents/personal/src/regex-crossword/RegexCrossword/RegexCrossword/" +
+"bin/Debug/lib/jquery-1.6.2.min.js\"></script>\r\n        <script type=\"text/javascr" +
+"ipt\" src=\"file:///C:/Documents%20and%20Settings/rtb/Documents/personal/src/regex" +
+"-crossword/RegexCrossword/RegexCrossword/bin/Debug/lib/jquery.quickfit.js\"></scr" +
+"ipt>\r\n        <script type=\"text/javascript\">\r\n            // use axial coords h" +
+"ttp://www.redblobgames.com/grids/hexagons/\r\n            // hexes involved are th" +
+"ose for which x,y,z all in [-6,6]\r\n            // always have x + y + z = 0\r\n\r\n " +
+"           var solveLog = ");
 
 
             
@@ -336,82 +338,85 @@ WriteLiteral("            };\r\n\r\n            var SQRT_3 = Math.sqrt(3);\r\n  
 "                   alert(\'Already at the start\');\r\n                } else {\r\n   " +
 "                 revertStep(solveLog[solveLogIdx]);\r\n                    showSte" +
 "p(solveLog[--solveLogIdx]);\r\n                }\r\n            }\r\n\r\n            fun" +
-"ction historyForward() {\r\n                if (solveLogIdx >= solveLog.length) {\r" +
-"\n                    alert(\'Already at the end\');\r\n                } else {\r\n   " +
-"                 showStep(solveLog[++solveLogIdx]);\r\n                }\r\n        " +
-"    }\r\n\r\n            $(document).keypress(function(event) {\r\n                if " +
-"(event.which == 39) {\r\n                    event.preventDefault();\r\n            " +
-"        historyForward();\r\n                } else if (event.which == 37) {\r\n    " +
-"                event.preventDefault();\r\n                    historyBack();\r\n   " +
-"             }\r\n            });\r\n\r\n            function showStep(step) {\r\n      " +
-"          console.log(step);\r\n\r\n                $(\'.clue\').removeClass(\'current " +
-"changed\');\r\n\r\n                // {\"InspectedAxis\":\"X\",\"InspectedIdx\":-6,\"NewRowV" +
-"alue\":\".......\",\"Changed\":false}\r\n                var clue = cluesByAxisIdx[step" +
-".InspectedAxis][step.InspectedIdx];\r\n                clue.addClass(\'current\');\r\n" +
-"                if (step.Changed) clue.addClass(\'changed\');\r\n\r\n                v" +
-"ar cells = step.NewRowValue.match(/\\.|\\[[^\\]]*\\]|[A-Z]/g);\r\n\r\n                //" +
-" store the old cells, if necessary, to support the back button:\r\n               " +
-" var storeOldValues = false;\r\n                if (!step.OldRowValues) {\r\n       " +
-"             step.OldRowValues = [];\r\n                    storeOldValues = true;" +
-"\r\n                }\r\n                \r\n                // now iterate along the " +
-"clue axis and update the letter\r\n                for (var offset = 0; offset < c" +
-"ells.length; offset++) {\r\n                    var qr = axisIdxOffsetToQR(step.In" +
-"spectedAxis, step.InspectedIdx, offset);\r\n                    var cell = hexData" +
-"ByQR[qr.q][qr.r];\r\n\r\n                    var oldVal = cell.text();\r\n            " +
-"        var newVal = cells[offset];\r\n                    if (oldVal !== newVal) " +
-"{\r\n                        console.log(\"Cell q = \" + qr.q + \", r = \" + qr.r + \" " +
-"changed from \'\" +\r\n                            oldVal + \"\' to \'\" + newVal + \"\'\")" +
-";\r\n                    }\r\n\r\n                    if (storeOldValues) {\r\n         " +
-"               step.OldRowValues[offset] = oldVal;\r\n                    }\r\n\r\n   " +
-"                 cell.text(newVal);\r\n                }\r\n            }\r\n\r\n       " +
-"     function revertStep(step) {\r\n                for (var offset = 0; offset < " +
-"step.OldRowValues.length; offset++) {\r\n                    var qr = axisIdxOffse" +
-"tToQR(step.InspectedAxis, step.InspectedIdx, offset);\r\n                    var c" +
-"ell = hexDataByQR[qr.q][qr.r];\r\n                    cell.text(step.OldRowValues[" +
-"offset]);\r\n                }\r\n            }\r\n\r\n            // The following code" +
-" sets up the UI\r\n            $(function () {\r\n                var container = $(" +
-"\'#container\');\r\n                var canvas = document.getElementById(\"canvas\").g" +
-"etContext(\'2d\');\r\n                $.each(hexDataByQR, function (q, rs) {\r\n      " +
-"              q = q - 0;\r\n                    $.each(rs, function (r, val) {\r\n  " +
-"                      r = r - 0;\r\n                        var xy = hexQRtoPixelX" +
-"Y(q, r);\r\n\r\n                        var div = $(\"<div />\")\r\n                    " +
-"        .addClass(\'hexagon\')\r\n                            .attr(\'title\', val)\r\n " +
-"                           .text(val);\r\n                        container.append" +
-"(div);\r\n                        div.width(SQRT_3 * SIZE);\r\n                     " +
-"   div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });\r\n   " +
-"                     hexDataByQR[q][r] = div;\r\n\r\n                        canvas." +
-"beginPath();\r\n                        canvas.moveTo(xy.x + hexCornerOffsets[0].x" +
-", xy.y + hexCornerOffsets[0].y);\r\n                        for (var i = 1; i <= 6" +
-"; i++) {\r\n                            canvas.lineTo(xy.x + hexCornerOffsets[i].x" +
-", xy.y + hexCornerOffsets[i].y);\r\n                        }\r\n                   " +
-"     canvas.stroke();\r\n                    });\r\n                });\r\n           " +
-"     $.each(cluesByAxisIdx, function (axis, cluesByIdx) {\r\n                    $" +
-".each(cluesByIdx, function (idx, clue) {\r\n                        idx = idx - 0;" +
-"\r\n                        var div = $(\"<div />\")\r\n                            .a" +
-"ddClass(\"clue\")\r\n                            .addClass(axis)\r\n                  " +
-"          .append($(\'<span />\').text(clue))\r\n                        container.a" +
-"ppend(div);\r\n\r\n                        // if axis == x\r\n                        " +
-"// x,y,z here are hex cube coords\r\n                        var x = idx;\r\n       " +
-"                 var y = Math.max(-6, - 6 - x) - 0.7;  // min y for x == idx, de" +
-"c 0.7 to move out of grid\r\n                        var z = - x - y; // fixed\r\n\r\n" +
-"                        var tmp;\r\n                        if (axis == \'Y\') {\r\n  " +
-"                          tmp = y;\r\n                            y = x;\r\n        " +
-"                    x = z;\r\n                            z = tmp;\r\n              " +
-"          } else if (axis == \'Z\') {\r\n                            tmp = z;\r\n     " +
-"                       z = x;\r\n                            x = y;\r\n             " +
-"               y = tmp;\r\n                        }\r\n\r\n                        //" +
-" xy is pixel coords\r\n                        var xy = hexQRtoPixelXY(x, z);\r\n\r\n " +
-"                       div.css({ top: xy.y - div.height() / 2, left: xy.x - div." +
-"width() });\r\n                        cluesByAxisIdx[axis][idx] = div;\r\n         " +
-"           });\r\n                });\r\n                \r\n                var xy = " +
-"hexQRtoPixelXY(-6, 9);\r\n                var controls = $(\'#controls\');\r\n        " +
-"        controls.css({ top: xy.y, left: xy.x - controls.width() });\r\n           " +
-" });\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <div id=\"container\">\r\n" +
-"            <canvas id=\"canvas\" width=\"1000\" height=\"1000\"></canvas>\r\n          " +
-"  <div id=\"elts\"></div>\r\n            <div id=\"controls\">\r\n                <butto" +
-"n onClick=\"historyBack()\" title=\"Go one step back\">&#x21E6;</button>\r\n          " +
-"      <button onClick=\"historyForward()\" title=\"Go one step forward\">&#x21E8;</b" +
-"utton>\r\n            </div>\r\n        </div>\r\n    </body>\r\n</html>\r\n");
+"ction historyForward() {\r\n                if (solveLogIdx + 1 >= solveLog.length" +
+") {\r\n                    alert(\'Already at the end\');\r\n                } else {\r" +
+"\n                    showStep(solveLog[++solveLogIdx]);\r\n                }\r\n    " +
+"        }\r\n\r\n            $(document).keypress(function(event) {\r\n               " +
+" if (event.which == 39) {\r\n                    event.preventDefault();\r\n        " +
+"            historyForward();\r\n                } else if (event.which == 37) {\r\n" +
+"                    event.preventDefault();\r\n                    historyBack();\r" +
+"\n                }\r\n            });\r\n\r\n            function showStep(step) {\r\n  " +
+"              console.log(step);\r\n\r\n                $(\'.clue\').removeClass(\'curr" +
+"ent changed\');\r\n\r\n                // {\"InspectedAxis\":\"X\",\"InspectedIdx\":-6,\"New" +
+"RowValue\":\".......\",\"Changed\":false}\r\n                var clue = cluesByAxisIdx[" +
+"step.InspectedAxis][step.InspectedIdx];\r\n                clue.addClass(\'current\'" +
+");\r\n                if (step.Changed) clue.addClass(\'changed\');\r\n\r\n             " +
+"   var cells = step.NewRowValue.match(/\\.|\\[[^\\]]*\\]|[A-Z]/g);\r\n\r\n              " +
+"  // store the old cells, if necessary, to support the back button:\r\n           " +
+"     var storeOldValues = false;\r\n                if (!step.OldRowValues) {\r\n   " +
+"                 step.OldRowValues = [];\r\n                    storeOldValues = t" +
+"rue;\r\n                }\r\n                \r\n                // now iterate along " +
+"the clue axis and update the letter\r\n                for (var offset = 0; offset" +
+" < cells.length; offset++) {\r\n                    var qr = axisIdxOffsetToQR(ste" +
+"p.InspectedAxis, step.InspectedIdx, offset);\r\n                    var cell = hex" +
+"DataByQR[qr.q][qr.r];\r\n\r\n                    var oldVal = cell.text();\r\n        " +
+"            var newVal = cells[offset];\r\n\r\n                    if (storeOldValue" +
+"s) {\r\n                        step.OldRowValues[offset] = oldVal;\r\n             " +
+"       }\r\n\r\n                    if (oldVal !== newVal) {\r\n                      " +
+"  console.log(\"Cell q = \" + qr.q + \", r = \" + qr.r + \" changed from \'\" +\r\n      " +
+"                      oldVal + \"\' to \'\" + newVal + \"\'\");\r\n\r\n                    " +
+"    cell.text(newVal);\r\n                        cell.quickfit();\r\n              " +
+"      }\r\n                }\r\n            }\r\n\r\n            function revertStep(ste" +
+"p) {\r\n                for (var offset = 0; offset < step.OldRowValues.length; of" +
+"fset++) {\r\n                    var qr = axisIdxOffsetToQR(step.InspectedAxis, st" +
+"ep.InspectedIdx, offset);\r\n                    var cell = hexDataByQR[qr.q][qr.r" +
+"];\r\n                    var newVal = step.OldRowValues[offset];\r\n               " +
+"     if (cell.text() !== newVal) {\r\n                        cell.text(newVal);\r\n" +
+"                        cell.quickfit();\r\n                    }\r\n               " +
+" }\r\n            }\r\n\r\n            // The following code sets up the UI\r\n         " +
+"   $(function () {\r\n                var container = $(\'#container\');\r\n          " +
+"      var canvas = document.getElementById(\"canvas\").getContext(\'2d\');\r\n        " +
+"        $.each(hexDataByQR, function (q, rs) {\r\n                    q = q - 0;\r\n" +
+"                    $.each(rs, function (r, val) {\r\n                        r = " +
+"r - 0;\r\n                        var xy = hexQRtoPixelXY(q, r);\r\n\r\n              " +
+"          var div = $(\"<div />\")\r\n                            .addClass(\'hexagon" +
+"\')\r\n                            .attr(\'title\', val);\r\n                        co" +
+"ntainer.append(div);\r\n                        div.width(SQRT_3 * SIZE);\r\n       " +
+"                 div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width(" +
+") / 2 });\r\n                        hexDataByQR[q][r] = div;\r\n\r\n                 " +
+"       canvas.beginPath();\r\n                        canvas.moveTo(xy.x + hexCorn" +
+"erOffsets[0].x, xy.y + hexCornerOffsets[0].y);\r\n                        for (var" +
+" i = 1; i <= 6; i++) {\r\n                            canvas.lineTo(xy.x + hexCorn" +
+"erOffsets[i].x, xy.y + hexCornerOffsets[i].y);\r\n                        }\r\n     " +
+"                   canvas.stroke();\r\n                    });\r\n                })" +
+";\r\n                $.each(cluesByAxisIdx, function (axis, cluesByIdx) {\r\n       " +
+"             $.each(cluesByIdx, function (idx, clue) {\r\n                        " +
+"idx = idx - 0;\r\n                        var div = $(\"<div />\")\r\n                " +
+"            .addClass(\"clue\")\r\n                            .addClass(axis)\r\n    " +
+"                        .append($(\'<span />\').text(clue))\r\n                     " +
+"   container.append(div);\r\n\r\n                        // if axis == x\r\n          " +
+"              // x,y,z here are hex cube coords\r\n                        var x =" +
+" idx;\r\n                        var y = Math.max(-6, - 6 - x) - 0.7;  // min y fo" +
+"r x == idx, dec 0.7 to move out of grid\r\n                        var z = - x - y" +
+"; // fixed\r\n\r\n                        var tmp;\r\n                        if (axis" +
+" == \'Y\') {\r\n                            tmp = y;\r\n                            y " +
+"= x;\r\n                            x = z;\r\n                            z = tmp;\r\n" +
+"                        } else if (axis == \'Z\') {\r\n                            t" +
+"mp = z;\r\n                            z = x;\r\n                            x = y;\r" +
+"\n                            y = tmp;\r\n                        }\r\n\r\n            " +
+"            // xy is pixel coords\r\n                        var xy = hexQRtoPixel" +
+"XY(x, z);\r\n\r\n                        div.css({ top: xy.y - div.height() / 2, lef" +
+"t: xy.x - div.width() });\r\n                        cluesByAxisIdx[axis][idx] = d" +
+"iv;\r\n                    });\r\n                });\r\n                \r\n           " +
+"     var xy = hexQRtoPixelXY(-6, 9);\r\n                var controls = $(\'#control" +
+"s\');\r\n                controls.css({ top: xy.y, left: xy.x - controls.width() })" +
+";\r\n            });\r\n        </script>\r\n    </head>\r\n    <body>\r\n        <div id=" +
+"\"container\">\r\n            <canvas id=\"canvas\" width=\"1000\" height=\"1000\"></canva" +
+"s>\r\n            <div id=\"elts\"></div>\r\n            <div id=\"controls\">\r\n        " +
+"        <button onClick=\"historyBack()\" title=\"Go one step back\">&#x21E6;</butto" +
+"n>\r\n                <button onClick=\"historyForward()\" title=\"Go one step forwar" +
+"d\">&#x21E8;</button>\r\n            </div>\r\n        </div>\r\n    </body>\r\n</html>\r\n" +
+"");
 
 
         }

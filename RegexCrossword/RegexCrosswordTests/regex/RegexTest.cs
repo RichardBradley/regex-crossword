@@ -59,6 +59,33 @@ namespace RegexCrosswordTests.regex
       Assert.AreEqual("XYZZZ", str.ToString());
     }
 
+    /// <summary>
+    /// This test examines one bugged case in detail
+    /// 
+    /// 
+    /// </summary>
+    [TestMethod]
+    public void TestAddConstraints5()
+    {
+      var regex = new Regex("(DI|NS|TH|OM)*");
+
+      var strOneChoice = CharSetString.Parse("[DNT][HI]");
+      Assert.IsTrue(regex.AddConstraints(strOneChoice));
+      Assert.AreEqual("[DT][HI]", strOneChoice.ToString());
+
+      var strSecondChoice = CharSetString.Parse("[^C][CEMN]");
+      Assert.IsTrue(regex.AddConstraints(strSecondChoice));
+      Assert.AreEqual("OM", strSecondChoice.ToString());
+
+      var strTwoChoices = CharSetString.Parse("[DNT][HI][^C][CEMN]");
+      Assert.IsTrue(regex.AddConstraints(strTwoChoices));
+      Assert.AreEqual("[DT][HI]OM", strTwoChoices.ToString());
+
+      var str = CharSetString.Parse("[DNT][HI][^C][CEMN][AEHMOR][AM].[HMS]");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("[DT][HI]OMOM[NOT][HMS]", str.ToString());
+    }
+
     [TestMethod]
     public void TestOrConstraint()
     {

@@ -60,37 +60,47 @@ namespace RegexCrossword.regex
     /// </param>
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      var innerMatchesSoFar = new List<CharSetString> {CharSetString.EmptyString()};
-      Inner.Next = new RegexEmptyMatchTerminalAtom();
-
-      for (int innerMatchCount = 0; innerMatchCount <= (MaxReps ?? Int32.MaxValue); innerMatchCount++)
+      if (MinReps == 0)
       {
-        if (innerMatchCount >= MinReps)
+        foreach (var nextMatch in Next.GeneratePossibleMatches(charIdx, currentConstraints))
         {
-          foreach (var innerMatchSoFar in innerMatchesSoFar)
+          yield return nextMatch;
+        }
+      }
+
+      Inner.Next = new RegexEmptyMatchTerminalAtom();
+      var currentInnerMatches = new List<CharSetString> { CharSetString.EmptyString() };
+
+      for (int innerMatchCount = 1; innerMatchCount <= (MaxReps ?? Int32.MaxValue); innerMatchCount++)
+      {
+        var newInnerMatches = new List<CharSetString>();
+        foreach (var currentInnerMatch in currentInnerMatches)
+        {
+          // TODO: could group the currentInnerMatches by length here, to save re-computing
+          // the following repeatedly for the same arguments in some cases
+          foreach (var nextInnerMatch in Inner.GeneratePossibleMatches(
+            charIdx + currentInnerMatch.Length,
+            currentConstraints))
           {
-            foreach (var nextMatch in Next.GeneratePossibleMatches(
-              charIdx + innerMatchSoFar.Length, currentConstraints))
+            var newInnerMatch = currentInnerMatch.Concat(nextInnerMatch);
+            newInnerMatches.Add(newInnerMatch);
+
+            if (innerMatchCount >= MinReps)
             {
-              yield return innerMatchSoFar.Concat(nextMatch);
+              foreach (var nextMatch in Next.GeneratePossibleMatches(
+                charIdx + newInnerMatch.Length, currentConstraints))
+              {
+                yield return newInnerMatch.Concat(nextMatch);
+              }
             }
           }
         }
+        currentInnerMatches = newInnerMatches;
 
-        var innerMatches = Inner.GeneratePossibleMatches(
-          charIdx + innerMatchCount,
-          currentConstraints).ToList();
-
-        if (!innerMatches.Any())
+        if (!currentInnerMatches.Any())
         {
-          yield break;
+          break;
         }
-
-        // Cross join all the matches so far with each new possible match
-        innerMatchesSoFar = innerMatchesSoFar
-          .SelectMany(prevInnerMatch =>
-                      innerMatches.Select(nextMatch => prevInnerMatch.Concat(nextMatch)))
-          .ToList();
       }
     }
 

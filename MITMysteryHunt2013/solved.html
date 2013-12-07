@@ -1,0 +1,470 @@
+
+
+<html>
+    <head>
+        <style type="text/css">
+            
+            body {
+                overflow-x: hidden;
+            }
+
+            #container {
+                position: relative;
+            }
+
+            .hexagon, .clue {
+                display: block;
+                padding: 0;
+                height: 2em;
+                line-height: 2em;
+                position: absolute;
+            }
+            
+            .hexagon {
+                text-align: center;
+                overflow: hidden;
+                font-size: 16px;
+            }
+
+            .clue {
+                text-align: right;
+                width: 20em;
+                padding-right: 20em;
+                font-size: 18px;
+            }
+
+            .clue.x {
+                transform: rotate(240deg);
+                -webkit-transform: rotate(240deg);
+            }
+
+            .clue.y {
+                transform: rotate(120deg);
+                -webkit-transform: rotate(120deg);
+            }
+
+            .clue.current span {
+                background-color: #b3d4fc;
+            }
+
+            .clue.current.changed span {
+                background-color: #25649F;
+                color: white;
+            }
+
+            #controls {
+                position: absolute;
+            }
+        </style>
+        <script type="text/javascript" src="file:///C:/Documents%20and%20Settings/rtb/Documents/personal/src/regex-crossword/RegexCrossword/RegexCrossword/bin/Debug/lib/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="file:///C:/Documents%20and%20Settings/rtb/Documents/personal/src/regex-crossword/RegexCrossword/RegexCrossword/bin/Debug/lib/jquery.quickfit.js"></script>
+        <script type="text/javascript">
+            // use axial coords http://www.redblobgames.com/grids/hexagons/
+            // hexes involved are those for which x,y,z all in [-6,6]
+            // always have x + y + z = 0
+
+            var solveLog = [{"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":".......","Changed":false},{"InspectedAxis":"X","InspectedIdx":-5,"NewRowValue":"[CR][CR][CR][CR][CR][CR][CR][CR]","Changed":true},{"InspectedAxis":"X","InspectedIdx":-4,"NewRowValue":"......[EMX][EMX][MX]","Changed":true},{"InspectedAxis":"X","InspectedIdx":-3,"NewRowValue":"..........","Changed":false},{"InspectedAxis":"X","InspectedIdx":-2,"NewRowValue":"...........","Changed":false},{"InspectedAxis":"X","InspectedIdx":-1,"NewRowValue":"............","Changed":false},{"InspectedAxis":"X","InspectedIdx":0,"NewRowValue":"...........[HIS][EIN]","Changed":true},{"InspectedAxis":"X","InspectedIdx":1,"NewRowValue":"[^C][^C][^C][^C][^C][^C][^C][^C][^C][^C][^C][^C]","Changed":true},{"InspectedAxis":"X","InspectedIdx":2,"NewRowValue":"...........","Changed":false},{"InspectedAxis":"X","InspectedIdx":3,"NewRowValue":"[CEIMOU][CEHIMOU][ACEHIMORU][ACEHIMORU][ACEHIMORU][ACEHIMORU][ACEHIMORU][ACEHIMORU][AEHMOR][AEHMOR]","Changed":true},{"InspectedAxis":"X","InspectedIdx":4,"NewRowValue":"........[^R]","Changed":true},{"InspectedAxis":"X","InspectedIdx":5,"NewRowValue":"........","Changed":false},{"InspectedAxis":"X","InspectedIdx":6,"NewRowValue":"[HMS][HMS][HMS][HMS][HMS][HMS][HMS]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-6,"NewRowValue":"[HMS]..[CEIMOU].[^C].","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-5,"NewRowValue":"[HMS]..[CEHIMOU].[^C]..","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-4,"NewRowValue":"[HMS]..[ACEHIMORU].[^C]...","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-3,"NewRowValue":"[HS][^CM][^C][AEHIMORU][^C][^C][^C][^C][^C][^CE]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-2,"NewRowValue":"[HMS][^X].[ACEHIMORU].[^C]....[^H]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-1,"NewRowValue":"[HMS]..[ACEHIMORU].[^C].....[CR]","Changed":false},{"InspectedAxis":"Y","InspectedIdx":0,"NewRowValue":"[HMS]..[ACEHIMORU].[^C].....[CR].","Changed":false},{"InspectedAxis":"Y","InspectedIdx":1,"NewRowValue":"[ACM][AM][ACMR][ACM][AMR][ACMR][ACMR][ACMR][ACMR][ACMR][CR][CMR]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":2,"NewRowValue":"[^CR][AEHMOR][^C][^C].....[CR][^M]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":3,"NewRowValue":"[EM][CEMN][EMNR][CEMN][CEMNR][CEMNR][CEMNR][CENR][CR][ER]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":4,"NewRowValue":"P[^C]....[EMX][CR].","Changed":true},{"InspectedAxis":"Y","InspectedIdx":5,"NewRowValue":"[HIMNOR][HI][CHIMNOR][CHIMNOR][CHIMNOR]M[CR][CHIMNOR]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":6,"NewRowValue":"[EIN][DNT][^X][^X]M[CR][^X]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-6,"NewRowValue":"[EIN][HIMNOR]P[EM][^CR][ACM][HMS]","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-5,"NewRowValue":"[DT][HI]OMOM[NOT][HMS]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-4,"NewRowValue":"F[CHIMNOR].[EMNR][^C][ACMR]..[HMS]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-3,"NewRowValue":"[MOR][HMO][HMO]M[MO]M[MO]RHH","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-2,"NewRowValue":"M[CHIMNOR].[CEMNR].[AMR].[ACEHIMORU].[^CM][HMS]","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-1,"NewRowValue":"CMCCCCMMMMMM","Changed":true},{"InspectedAxis":"Z","InspectedIdx":0,"NewRowValue":"[^X][CR][EMX][CEMNR].[ACMR].[^C].[AEHIMORU]..[HMS]","Changed":false},{"InspectedAxis":"Z","InspectedIdx":1,"NewRowValue":"[CHIMNOR][CR][CENR][CHIMOR][CMR][CENR][CHIMNOR]R[EHIMNOR][CHIMOR][CHIMNOR][CENR]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":2,"NewRowValue":".[CR].[ACMR].[^X][^X][^C].[CEHIMOU][^X]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":3,"NewRowValue":"RRRR[HR][HR]H[HR][HR][CEIMOU]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":4,"NewRowValue":"N[CR]...[^C].[^C]E","Changed":true},{"InspectedAxis":"Z","InspectedIdx":5,"NewRowValue":"RR[DMR][DMR][DMR][DMR][DMR][DMR]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":6,"NewRowValue":".CCHH[CH][CH]","Changed":true},{"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":"GRNRV[CHIMNOR][^X]","Changed":true},{"InspectedAxis":"X","InspectedIdx":-5,"NewRowValue":"CR[CR]R[CR][CR][CR]C","Changed":false},{"InspectedAxis":"X","InspectedIdx":-4,"NewRowValue":"C[DMR].RXEXMM","Changed":true},{"InspectedAxis":"X","InspectedIdx":-3,"NewRowValue":"HDDR[ACMR][CHIMOR][CEMNR]C[CHIMNOR][MOR]","Changed":true},{"InspectedAxis":"X","InspectedIdx":-2,"NewRowValue":"H[DMR]XHCR.C.[HMO]F","Changed":true},{"InspectedAxis":"X","InspectedIdx":-1,"NewRowValue":"[CH][DMR][^C][HR][CDHMORT][CENR][CMR]C[CEMNR][HMO][CHIMNOR][DT]","Changed":true},{"InspectedAxis":"X","InspectedIdx":0,"NewRowValue":"[CH][DMR].H[^X][CHIMNOR].C.M.[HI][IN]","Changed":true},{"InspectedAxis":"X","InspectedIdx":1,"NewRowValue":"[DMR][^C][HR][^C]R[^C]MM[MO][EMNR]O[HIMNOR]","Changed":true},{"InspectedAxis":"X","InspectedIdx":2,"NewRowValue":"E[HR].[EHIMNOR].M[CX]M[^C]MP","Changed":true},{"InspectedAxis":"X","InspectedIdx":3,"NewRowValue":"[CEIMOU][CEHIMOU][HMOR][AEHMOR]M[AEMOR][MO][AMR]O[EM]","Changed":true},{"InspectedAxis":"X","InspectedIdx":4,"NewRowValue":"[^RX][CHIMNOR][^R]M[^R]RXM[^CR]","Changed":true},{"InspectedAxis":"X","InspectedIdx":5,"NewRowValue":"[CENR][^M]M[^CM]H[^M][NOT][AC]","Changed":true},{"InspectedAxis":"X","InspectedIdx":6,"NewRowValue":"[MS]M[HMS]HH[HMS][MS]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-6,"NewRowValue":"SE[^RX][EU]E[DMR][CH]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-5,"NewRowValue":"MLR[CEHIMOU]RL[DMR][CH]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-4,"NewRowValue":"[HMS]M[^R]OXR.[DMR]H","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-3,"NewRowValue":"HEM[AEHOR][EHIMNOR][^CE]H[^CM][DMR]H","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-2,"NewRowValue":"HHXM[^HX]RHHXDC","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-1,"NewRowValue":"[HMS][^M]R[AEMOR]M[^C][CHIMNOR][CDHMORT]HDDC","Changed":true},{"InspectedAxis":"Y","InspectedIdx":0,"NewRowValue":"[MS][NOT]X[MO][CX]M.[CENR]CR.RG","Changed":false},{"InspectedAxis":"Y","InspectedIdx":1,"NewRowValue":"AM[AM]MMCMRCRCR","Changed":true},{"InspectedAxis":"Y","InspectedIdx":2,"NewRowValue":"[^CMR]O[^C][MO].C.[CHIMOR]XRN","Changed":true},{"InspectedAxis":"Y","InspectedIdx":3,"NewRowValue":"EMNMNCRECR","Changed":true},{"InspectedAxis":"Y","InspectedIdx":4,"NewRowValue":"PO.O.CX[CR]V","Changed":true},{"InspectedAxis":"Y","InspectedIdx":5,"NewRowValue":"[HIMNOR][HI][CHIMNOR][HMO][CHIMNOR]M[CR][CHIMNOR]","Changed":false},{"InspectedAxis":"Y","InspectedIdx":6,"NewRowValue":"NDF[MOR]MC[^X]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-6,"NewRowValue":"NHPEHA[MS]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-5,"NewRowValue":"DIOMOM[NOT][HMS]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-4,"NewRowValue":"F[CHIMNOR].N[^C][AM]X[^M]H","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-3,"NewRowValue":"[MO][MO]OMMMMRHH","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-2,"NewRowValue":"M[CHIMNOR].N.M[CX][AEMOR]XE[HMS]","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-1,"NewRowValue":"CMCCCCMMMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":0,"NewRowValue":"[^CX]RXR.MIII[AEHOR][^R]LS","Changed":true},{"InspectedAxis":"Z","InspectedIdx":1,"NewRowValue":"OREOREOREORE","Changed":true},{"InspectedAxis":"Z","InspectedIdx":2,"NewRowValue":"VCXCC[CDHMORT]H[^CEX]XCC","Changed":true},{"InspectedAxis":"Z","InspectedIdx":3,"NewRowValue":"RRRRHHHRR[EU]","Changed":false},{"InspectedAxis":"Z","InspectedIdx":4,"NewRowValue":"NCXDX[^CM]XLE","Changed":true},{"InspectedAxis":"Z","InspectedIdx":5,"NewRowValue":"RRDD[DM][DM][DM][DM]","Changed":true},{"InspectedAxis":"Z","InspectedIdx":6,"NewRowValue":"GCCHH[CH][CH]","Changed":false},{"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":"GRNRVOH","Changed":true},{"InspectedAxis":"X","InspectedIdx":-5,"NewRowValue":"CRCRCRRC","Changed":false},{"InspectedAxis":"X","InspectedIdx":-4,"NewRowValue":"CDXRXEXMM","Changed":false},{"InspectedAxis":"X","InspectedIdx":-3,"NewRowValue":"HDDRCORCCM","Changed":true},{"InspectedAxis":"X","InspectedIdx":-2,"NewRowValue":"H[DM]XHCR.C.[MO]F","Changed":false},{"InspectedAxis":"X","InspectedIdx":-1,"NewRowValue":"CMEHHEMCNO[CHIMNOR]D","Changed":true},{"InspectedAxis":"X","InspectedIdx":0,"NewRowValue":"[CH][DM]XHHOIC.M.IN","Changed":false},{"InspectedAxis":"X","InspectedIdx":1,"NewRowValue":"[DM]LR[^CEX]RIMMMNOH","Changed":false},{"InspectedAxis":"X","InspectedIdx":2,"NewRowValue":"ERXEIMCMXMP","Changed":true},{"InspectedAxis":"X","InspectedIdx":3,"NewRowValue":"[EU]COHM[AEMOR]M[AM]OE","Changed":true},{"InspectedAxis":"X","InspectedIdx":4,"NewRowValue":"CRXMXRXMH","Changed":true},{"InspectedAxis":"X","InspectedIdx":5,"NewRowValue":"ELMEH[^M][NOT]A","Changed":false},{"InspectedAxis":"X","InspectedIdx":6,"NewRowValue":"SMMHHHS","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-6,"NewRowValue":"SECUE[DM][CH]","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-5,"NewRowValue":"MLRCRL[DM]C","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-4,"NewRowValue":"MMXOXRXMH","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-3,"NewRowValue":"HEMHEMHEMH","Changed":true},{"InspectedAxis":"Y","InspectedIdx":-2,"NewRowValue":"HHXMIRHHXDC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-1,"NewRowValue":"HPRRMIOHHDDC","Changed":true},{"InspectedAxis":"Y","InspectedIdx":0,"NewRowValue":"S[NOT]XMCMIECRXRG","Changed":false},{"InspectedAxis":"Y","InspectedIdx":1,"NewRowValue":"AM[AM]MMCMRCRCR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":2,"NewRowValue":"HOXMMCCOXRN","Changed":true},{"InspectedAxis":"Y","InspectedIdx":3,"NewRowValue":"EMNMNCRECR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":4,"NewRowValue":"PO.O.CXRV","Changed":false},{"InspectedAxis":"Y","InspectedIdx":5,"NewRowValue":"HI[CHMNOR][MO]CMRO","Changed":true},{"InspectedAxis":"Y","InspectedIdx":6,"NewRowValue":"NDFMMCH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-6,"NewRowValue":"NHPEHAS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-5,"NewRowValue":"DIOMOMTH","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-4,"NewRowValue":"F[CHMNOR].NX[AM]XPH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-3,"NewRowValue":"MMOMMMMRHH","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-2,"NewRowValue":"MC.NMMCRXEM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-1,"NewRowValue":"CMCCCCMMMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":0,"NewRowValue":"HRXRCMIIIHXLS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":1,"NewRowValue":"OREOREOREORE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":2,"NewRowValue":"VCXCCHHMXCC","Changed":false},{"InspectedAxis":"Z","InspectedIdx":3,"NewRowValue":"RRRRHHHRRU","Changed":false},{"InspectedAxis":"Z","InspectedIdx":4,"NewRowValue":"NCXDXEXLE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":5,"NewRowValue":"RRDDMMMM","Changed":true},{"InspectedAxis":"Z","InspectedIdx":6,"NewRowValue":"GCCHHCC","Changed":true},{"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":"GRNRVOH","Changed":false},{"InspectedAxis":"X","InspectedIdx":-5,"NewRowValue":"CRCRCRRC","Changed":false},{"InspectedAxis":"X","InspectedIdx":-4,"NewRowValue":"CDXRXEXMM","Changed":false},{"InspectedAxis":"X","InspectedIdx":-3,"NewRowValue":"HDDRCORCCM","Changed":false},{"InspectedAxis":"X","InspectedIdx":-2,"NewRowValue":"HMXHCRCCXMF","Changed":true},{"InspectedAxis":"X","InspectedIdx":-1,"NewRowValue":"CMEHHEMCNO[CHMNOR]D","Changed":false},{"InspectedAxis":"X","InspectedIdx":0,"NewRowValue":"CMXHHOICMM.IN","Changed":false},{"InspectedAxis":"X","InspectedIdx":1,"NewRowValue":"MLRMRIMMMNOH","Changed":false},{"InspectedAxis":"X","InspectedIdx":2,"NewRowValue":"ERXEIMCMXMP","Changed":false},{"InspectedAxis":"X","InspectedIdx":3,"NewRowValue":"UCOHMRM[AM]OE","Changed":false},{"InspectedAxis":"X","InspectedIdx":4,"NewRowValue":"CRXMXRXMH","Changed":false},{"InspectedAxis":"X","InspectedIdx":5,"NewRowValue":"ELMEHPTA","Changed":false},{"InspectedAxis":"X","InspectedIdx":6,"NewRowValue":"SMMHHHS","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-6,"NewRowValue":"SECUEMC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-5,"NewRowValue":"MLRCRLMC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-4,"NewRowValue":"MMXOXRXMH","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-3,"NewRowValue":"HEMHEMHEMH","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-2,"NewRowValue":"HHXMIRHHXDC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-1,"NewRowValue":"HPRRMIOHHDDC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":0,"NewRowValue":"STXMCMIECRXRG","Changed":false},{"InspectedAxis":"Y","InspectedIdx":1,"NewRowValue":"AM[AM]MMCMRCRCR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":2,"NewRowValue":"HOXMMCCOXRN","Changed":false},{"InspectedAxis":"Y","InspectedIdx":3,"NewRowValue":"EMNMNCRECR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":4,"NewRowValue":"POXOXCXRV","Changed":true},{"InspectedAxis":"Y","InspectedIdx":5,"NewRowValue":"HI[CHMNOR]MCMRO","Changed":false},{"InspectedAxis":"Y","InspectedIdx":6,"NewRowValue":"NDFMMCH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-6,"NewRowValue":"NHPEHAS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-5,"NewRowValue":"DIOMOMTH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-4,"NewRowValue":"FOXNXAXPH","Changed":true},{"InspectedAxis":"Z","InspectedIdx":-3,"NewRowValue":"MMOMMMMRHH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-2,"NewRowValue":"MCXNMMCRXEM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-1,"NewRowValue":"CMCCCCMMMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":0,"NewRowValue":"HRXRCMIIIHXLS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":1,"NewRowValue":"OREOREOREORE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":2,"NewRowValue":"VCXCCHHMXCC","Changed":false},{"InspectedAxis":"Z","InspectedIdx":3,"NewRowValue":"RRRRHHHRRU","Changed":false},{"InspectedAxis":"Z","InspectedIdx":4,"NewRowValue":"NCXDXEXLE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":5,"NewRowValue":"RRDDMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":6,"NewRowValue":"GCCHHCC","Changed":false},{"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":"GRNRVOH","Changed":false},{"InspectedAxis":"X","InspectedIdx":-5,"NewRowValue":"CRCRCRRC","Changed":false},{"InspectedAxis":"X","InspectedIdx":-4,"NewRowValue":"CDXRXEXMM","Changed":false},{"InspectedAxis":"X","InspectedIdx":-3,"NewRowValue":"HDDRCORCCM","Changed":false},{"InspectedAxis":"X","InspectedIdx":-2,"NewRowValue":"HMXHCRCCXMF","Changed":false},{"InspectedAxis":"X","InspectedIdx":-1,"NewRowValue":"CMEHHEMCNOOD","Changed":false},{"InspectedAxis":"X","InspectedIdx":0,"NewRowValue":"CMXHHOICMMXIN","Changed":false},{"InspectedAxis":"X","InspectedIdx":1,"NewRowValue":"MLRMRIMMMNOH","Changed":false},{"InspectedAxis":"X","InspectedIdx":2,"NewRowValue":"ERXEIMCMXMP","Changed":false},{"InspectedAxis":"X","InspectedIdx":3,"NewRowValue":"UCOHMRMAOE","Changed":false},{"InspectedAxis":"X","InspectedIdx":4,"NewRowValue":"CRXMXRXMH","Changed":false},{"InspectedAxis":"X","InspectedIdx":5,"NewRowValue":"ELMEHPTA","Changed":false},{"InspectedAxis":"X","InspectedIdx":6,"NewRowValue":"SMMHHHS","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-6,"NewRowValue":"SECUEMC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-5,"NewRowValue":"MLRCRLMC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-4,"NewRowValue":"MMXOXRXMH","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-3,"NewRowValue":"HEMHEMHEMH","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-2,"NewRowValue":"HHXMIRHHXDC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":-1,"NewRowValue":"HPRRMIOHHDDC","Changed":false},{"InspectedAxis":"Y","InspectedIdx":0,"NewRowValue":"STXMCMIECRXRG","Changed":false},{"InspectedAxis":"Y","InspectedIdx":1,"NewRowValue":"AMAMMCMRCRCR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":2,"NewRowValue":"HOXMMCCOXRN","Changed":false},{"InspectedAxis":"Y","InspectedIdx":3,"NewRowValue":"EMNMNCRECR","Changed":false},{"InspectedAxis":"Y","InspectedIdx":4,"NewRowValue":"POXOXCXRV","Changed":false},{"InspectedAxis":"Y","InspectedIdx":5,"NewRowValue":"HIOMCMRO","Changed":false},{"InspectedAxis":"Y","InspectedIdx":6,"NewRowValue":"NDFMMCH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-6,"NewRowValue":"NHPEHAS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-5,"NewRowValue":"DIOMOMTH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-4,"NewRowValue":"FOXNXAXPH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-3,"NewRowValue":"MMOMMMMRHH","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-2,"NewRowValue":"MCXNMMCRXEM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":-1,"NewRowValue":"CMCCCCMMMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":0,"NewRowValue":"HRXRCMIIIHXLS","Changed":false},{"InspectedAxis":"Z","InspectedIdx":1,"NewRowValue":"OREOREOREORE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":2,"NewRowValue":"VCXCCHHMXCC","Changed":false},{"InspectedAxis":"Z","InspectedIdx":3,"NewRowValue":"RRRRHHHRRU","Changed":false},{"InspectedAxis":"Z","InspectedIdx":4,"NewRowValue":"NCXDXEXLE","Changed":false},{"InspectedAxis":"Z","InspectedIdx":5,"NewRowValue":"RRDDMMMM","Changed":false},{"InspectedAxis":"Z","InspectedIdx":6,"NewRowValue":"GCCHHCC","Changed":false}];
+            var solveLogIdx = -1; // just before the start
+
+            var hexDataByQR = {
+                 "-6":{
+                         "6" : "-6,6"
+                        , "5" : "-6,5"
+                        , "4" : "-6,4"
+                        , "3" : "-6,3"
+                        , "2" : "-6,2"
+                        , "1" : "-6,1"
+                        , "0" : "-6,0"
+                }
+                , "-5":{
+                         "6" : "-5,6"
+                        , "5" : "-5,5"
+                        , "4" : "-5,4"
+                        , "3" : "-5,3"
+                        , "2" : "-5,2"
+                        , "1" : "-5,1"
+                        , "0" : "-5,0"
+                        , "-1" : "-5,-1"
+                }
+                , "-4":{
+                         "6" : "-4,6"
+                        , "5" : "-4,5"
+                        , "4" : "-4,4"
+                        , "3" : "-4,3"
+                        , "2" : "-4,2"
+                        , "1" : "-4,1"
+                        , "0" : "-4,0"
+                        , "-1" : "-4,-1"
+                        , "-2" : "-4,-2"
+                }
+                , "-3":{
+                         "6" : "-3,6"
+                        , "5" : "-3,5"
+                        , "4" : "-3,4"
+                        , "3" : "-3,3"
+                        , "2" : "-3,2"
+                        , "1" : "-3,1"
+                        , "0" : "-3,0"
+                        , "-1" : "-3,-1"
+                        , "-2" : "-3,-2"
+                        , "-3" : "-3,-3"
+                }
+                , "-2":{
+                         "6" : "-2,6"
+                        , "5" : "-2,5"
+                        , "4" : "-2,4"
+                        , "3" : "-2,3"
+                        , "2" : "-2,2"
+                        , "1" : "-2,1"
+                        , "0" : "-2,0"
+                        , "-1" : "-2,-1"
+                        , "-2" : "-2,-2"
+                        , "-3" : "-2,-3"
+                        , "-4" : "-2,-4"
+                }
+                , "-1":{
+                         "6" : "-1,6"
+                        , "5" : "-1,5"
+                        , "4" : "-1,4"
+                        , "3" : "-1,3"
+                        , "2" : "-1,2"
+                        , "1" : "-1,1"
+                        , "0" : "-1,0"
+                        , "-1" : "-1,-1"
+                        , "-2" : "-1,-2"
+                        , "-3" : "-1,-3"
+                        , "-4" : "-1,-4"
+                        , "-5" : "-1,-5"
+                }
+                , "0":{
+                         "6" : "0,6"
+                        , "5" : "0,5"
+                        , "4" : "0,4"
+                        , "3" : "0,3"
+                        , "2" : "0,2"
+                        , "1" : "0,1"
+                        , "0" : "0,0"
+                        , "-1" : "0,-1"
+                        , "-2" : "0,-2"
+                        , "-3" : "0,-3"
+                        , "-4" : "0,-4"
+                        , "-5" : "0,-5"
+                        , "-6" : "0,-6"
+                }
+                , "1":{
+                         "5" : "1,5"
+                        , "4" : "1,4"
+                        , "3" : "1,3"
+                        , "2" : "1,2"
+                        , "1" : "1,1"
+                        , "0" : "1,0"
+                        , "-1" : "1,-1"
+                        , "-2" : "1,-2"
+                        , "-3" : "1,-3"
+                        , "-4" : "1,-4"
+                        , "-5" : "1,-5"
+                        , "-6" : "1,-6"
+                }
+                , "2":{
+                         "4" : "2,4"
+                        , "3" : "2,3"
+                        , "2" : "2,2"
+                        , "1" : "2,1"
+                        , "0" : "2,0"
+                        , "-1" : "2,-1"
+                        , "-2" : "2,-2"
+                        , "-3" : "2,-3"
+                        , "-4" : "2,-4"
+                        , "-5" : "2,-5"
+                        , "-6" : "2,-6"
+                }
+                , "3":{
+                         "3" : "3,3"
+                        , "2" : "3,2"
+                        , "1" : "3,1"
+                        , "0" : "3,0"
+                        , "-1" : "3,-1"
+                        , "-2" : "3,-2"
+                        , "-3" : "3,-3"
+                        , "-4" : "3,-4"
+                        , "-5" : "3,-5"
+                        , "-6" : "3,-6"
+                }
+                , "4":{
+                         "2" : "4,2"
+                        , "1" : "4,1"
+                        , "0" : "4,0"
+                        , "-1" : "4,-1"
+                        , "-2" : "4,-2"
+                        , "-3" : "4,-3"
+                        , "-4" : "4,-4"
+                        , "-5" : "4,-5"
+                        , "-6" : "4,-6"
+                }
+                , "5":{
+                         "1" : "5,1"
+                        , "0" : "5,0"
+                        , "-1" : "5,-1"
+                        , "-2" : "5,-2"
+                        , "-3" : "5,-3"
+                        , "-4" : "5,-4"
+                        , "-5" : "5,-5"
+                        , "-6" : "5,-6"
+                }
+                , "6":{
+                         "0" : "6,0"
+                        , "-1" : "6,-1"
+                        , "-2" : "6,-2"
+                        , "-3" : "6,-3"
+                        , "-4" : "6,-4"
+                        , "-5" : "6,-5"
+                        , "-6" : "6,-6"
+                }
+            };
+            var cluesByAxisIdx = {
+                    "X":{
+                         "-6":".*G.*V.*H.*"
+                         ,"-5":"[CR]*"
+                         ,"-4":".*XEXM*"
+                         ,"-3":".*DD.*CCM.*"
+                         ,"-2":".*XHCR.*X.*"
+                         ,"-1":".*(.)(.)(.)(.)\\4\\3\\2\\1.*"
+                         ,"0":".*(IN|SE|HI)"
+                         ,"1":"[^C]*MMM[^C]*"
+                         ,"2":".*(.)C\\1X\\1.*"
+                         ,"3":"[CEIMU]*OH[AEMOR]*"
+                         ,"4":"(RX|[^R])*"
+                         ,"5":"[^M]*M[^M]*"
+                         ,"6":"(S|MM|HHH)*"
+                    }
+                    ,"Y":{
+                         "-6":".*SE.*UE.*"
+                         ,"-5":".*LR.*RL.*"
+                         ,"-4":".*OXR.*"
+                         ,"-3":"([^CEM]|EM)*"
+                         ,"-2":"(HHX|[^HX])*"
+                         ,"-1":".*PRR.*DDC.*"
+                         ,"0":".*"
+                         ,"1":"[AM]*CM(RC)*R?"
+                         ,"2":"([^CM]|MM|CC)*"
+                         ,"3":"(E|CR|MN)*"
+                         ,"4":"P+(..)\\1.*"
+                         ,"5":"[CHMNOR]*I[CHMNOR]*"
+                         ,"6":"(ND|ET|IN)[^X]*"
+                    }
+                    ,"Z":{
+                         "-6":".*H.*H.*"
+                         ,"-5":"(DI|NS|TH|OM)*"
+                         ,"-4":"F.*[AO].*[AO].*"
+                         ,"-3":"(O|RHH|MM)*"
+                         ,"-2":".*"
+                         ,"-1":"C*MC(CCC|MM)*"
+                         ,"0":"[^C]*[^R]*III.*"
+                         ,"1":"(...?)\\1*"
+                         ,"2":"([^X]|XCC)*"
+                         ,"3":"(RR|HHH)*.?"
+                         ,"4":"N.*X.X.X.*E"
+                         ,"5":"R*D*M*"
+                         ,"6":".(C|HH)*"
+                    }
+            };
+
+            var SQRT_3 = Math.sqrt(3);
+            // SIZE is the edge length of a single hex
+            var SIZE = 25;
+            var CENTRE_X = SIZE * 18;
+            var CENTRE_Y = CENTRE_X;
+
+            var hexCornerOffsets = [];
+            for (var i = 0; i <= 6; i++) {
+                var angle = 2 * Math.PI / 6 * (i + 0.5);
+                var x_i = SIZE * Math.cos(angle);
+                var y_i = SIZE * Math.sin(angle);
+                hexCornerOffsets[i] = { 'x': x_i, 'y': y_i };
+            }
+
+            function hexQRtoPixelXY(q, r) {
+                var x = CENTRE_X + (SIZE * SQRT_3 * (q + r / 2.0));
+                var y = CENTRE_Y + (SIZE * 3.0 / 2.0 * r);
+                return { "x": x, "y": y };
+            }
+            
+            // See HexRegexCrossword.AxisIdxOffsetToQR
+            function axisIdxOffsetToQR(axis, idx, offset) {
+                var q, r;
+                if (axis == 'X') {
+                    q = idx;
+                    r = Math.min(6, 6 - idx);
+                    r -= offset;
+                } else if (axis == 'Y') {
+                    q = Math.min(6, 6 - idx);
+                    r = Math.max(-6, - 6 - idx);
+                    q -= offset;
+                    r += offset;
+                } else { // axis == 'Z'
+                    q = Math.max(-6, -6 - idx);
+                    r = idx;
+                    q += offset;
+                }
+                return { q: q, r: r };
+            }
+
+            function historyBack() {
+                if (solveLogIdx <= 0) {
+                    alert('Already at the start');
+                } else {
+                    revertStep(solveLog[solveLogIdx]);
+                    showStep(solveLog[--solveLogIdx]);
+                }
+            }
+
+            function historyForward() {
+                if (solveLogIdx + 1 >= solveLog.length) {
+                    alert('Already at the end');
+                } else {
+                    showStep(solveLog[++solveLogIdx]);
+                }
+            }
+
+            function showStep(step) {
+                console.log(step);
+
+                $('.clue').removeClass('current changed');
+
+                // {"InspectedAxis":"X","InspectedIdx":-6,"NewRowValue":".......","Changed":false}
+                var clue = cluesByAxisIdx[step.InspectedAxis][step.InspectedIdx];
+                clue.addClass('current');
+                if (step.Changed) clue.addClass('changed');
+
+                var cells = step.NewRowValue.match(/\.|\[[^\]]*\]|[A-Z]/g);
+
+                // store the old cells, if necessary, to support the back button:
+                var storeOldValues = false;
+                if (!step.OldRowValues) {
+                    step.OldRowValues = [];
+                    storeOldValues = true;
+                }
+                
+                // now iterate along the clue axis and update the letter
+                for (var offset = 0; offset < cells.length; offset++) {
+                    var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
+                    var cell = hexDataByQR[qr.q][qr.r];
+
+                    var oldVal = cell.text();
+                    var newVal = cells[offset];
+
+                    if (storeOldValues) {
+                        step.OldRowValues[offset] = oldVal;
+                    }
+
+                    if (oldVal !== newVal) {
+                        console.log("Cell q = " + qr.q + ", r = " + qr.r + " changed from '" +
+                            oldVal + "' to '" + newVal + "'");
+
+                        cell.text(newVal);
+                        cell.quickfit();
+                    }
+                }
+            }
+
+            function revertStep(step) {
+                for (var offset = 0; offset < step.OldRowValues.length; offset++) {
+                    var qr = axisIdxOffsetToQR(step.InspectedAxis, step.InspectedIdx, offset);
+                    var cell = hexDataByQR[qr.q][qr.r];
+                    var newVal = step.OldRowValues[offset];
+                    if (cell.text() !== newVal) {
+                        cell.text(newVal);
+                        cell.quickfit();
+                    }
+                }
+            }
+
+            // The following code sets up the UI
+            $(function () {
+                var container = $('#container');
+                var canvas = document.getElementById("canvas").getContext('2d');
+                $.each(hexDataByQR, function (q, rs) {
+                    q = q - 0;
+                    $.each(rs, function (r, val) {
+                        r = r - 0;
+                        var xy = hexQRtoPixelXY(q, r);
+
+                        var div = $("<div />")
+                            .addClass('hexagon')
+                            .attr('title', val);
+                        container.append(div);
+                        div.width(SQRT_3 * SIZE);
+                        div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() / 2 });
+                        hexDataByQR[q][r] = div;
+
+                        canvas.beginPath();
+                        canvas.moveTo(xy.x + hexCornerOffsets[0].x, xy.y + hexCornerOffsets[0].y);
+                        for (var i = 1; i <= 6; i++) {
+                            canvas.lineTo(xy.x + hexCornerOffsets[i].x, xy.y + hexCornerOffsets[i].y);
+                        }
+                        canvas.stroke();
+                    });
+                });
+                $.each(cluesByAxisIdx, function (axis, cluesByIdx) {
+                    $.each(cluesByIdx, function (idx, clue) {
+                        idx = idx - 0;
+                        var div = $("<div />")
+                            .addClass("clue")
+                            .addClass(axis)
+                            .append($('<span />').text(clue))
+                        container.append(div);
+
+                        // if axis == x
+                        // x,y,z here are hex cube coords
+                        var x = idx;
+                        var y = Math.max(-6, - 6 - x) - 0.7;  // min y for x == idx, dec 0.7 to move out of grid
+                        var z = - x - y; // fixed
+
+                        var tmp;
+                        if (axis == 'Y') {
+                            tmp = y;
+                            y = x;
+                            x = z;
+                            z = tmp;
+                        } else if (axis == 'Z') {
+                            tmp = z;
+                            z = x;
+                            x = y;
+                            y = tmp;
+                        }
+
+                        // xy is pixel coords
+                        var xy = hexQRtoPixelXY(x, z);
+
+                        div.css({ top: xy.y - div.height() / 2, left: xy.x - div.width() });
+                        cluesByAxisIdx[axis][idx] = div;
+                    });
+                });
+                
+                var xy = hexQRtoPixelXY(-6, 9);
+                var controls = $('#controls');
+                controls.css({ top: xy.y, left: xy.x - controls.width() });
+
+                $(document).keypress(function(event) {
+                    if (event.keyCode == 39) {
+                        event.preventDefault();
+                        historyForward();
+                    } else if (event.keyCode == 37) {
+                        event.preventDefault();
+                        historyBack();
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <canvas id="canvas" width="1000" height="1000"></canvas>
+            <div id="elts"></div>
+            <div id="controls">
+                <button onClick="historyBack()" title="Go one step back">&#x21E6;</button>
+                <button onClick="historyForward()" title="Go one step forward">&#x21E8;</button>
+            </div>
+        </div>
+    </body>
+</html>

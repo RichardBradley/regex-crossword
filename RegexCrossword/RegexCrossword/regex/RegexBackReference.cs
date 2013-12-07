@@ -10,51 +10,49 @@ namespace RegexCrossword.regex
 
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      foreach (var previousGroupMatch in Group.PossibleMatches)
+      // Is the groupMatch applicable here?
+      //
+      // The constraints here retrospectively modify the earlier match -- any matching string
+      // must match both here and before, i.e.
+      // a regex like "(.)\1" applied to ".A" must become "AA"
+      //
+      // We bookmark the previous match, so that we can put things back how we found them
+      // after iterating over this possible path.
+
+      var previousGroupMatch = Group.CurrentMatch;
+      previousGroupMatch.Bookmark();
+
+      var i = 0;
+      foreach (var groupMatchChar in previousGroupMatch)
       {
-        // Is the groupMatch applicable here?
-        //
-        // The constraints here retrospectively modify the earlier match -- any matching string
-        // must match both here and before, i.e.
-        // a regex like "(.)\1" applied to ".A" must become "AA"
-        //
-        // We bookmark the previous match, so that we can put things back how we found them
-        // after iterating over this possible path.
-
-        previousGroupMatch.Bookmark();
-
-        var i = 0;
-        foreach (var groupMatchChar in previousGroupMatch)
+        if (charIdx + i >= currentConstraints.Length)
         {
-          if (charIdx + i >= currentConstraints.Length)
-          {
-            goto nextPreviousGroupMatch;
-          }
-          try
-          {
-            groupMatchChar.Intersect(currentConstraints[charIdx + i]);
-          }
-          catch (CharSet.EmptyIntersectionException)
-          {
-            goto nextPreviousGroupMatch;
-          }
-          i++;
+          goto noMatch;
         }
-
-        foreach (var remainderMatch in
-          Next.GeneratePossibleMatches(
-            charIdx + previousGroupMatch.Length,
-            currentConstraints))
+        try
         {
-          // The value returned here is valid only briefly: we will reuse the
-          // same strings in the next element.
-          // See comments on RegexNonTerminalAtom.GeneratePossibleMatches
-          yield return previousGroupMatch.Concat(remainderMatch);
+          groupMatchChar.Intersect(currentConstraints[charIdx + i]);
         }
-
-      nextPreviousGroupMatch:
-        previousGroupMatch.RevertToBookmark();
+        catch (CharSet.EmptyIntersectionException)
+        {
+          goto noMatch;
+        }
+        i++;
       }
+
+      foreach (var remainderMatch in
+        Next.GeneratePossibleMatches(
+          charIdx + previousGroupMatch.Length,
+          currentConstraints))
+      {
+        // The value returned here is valid only briefly: we will reuse the
+        // same strings in the next element.
+        // See comments on RegexNonTerminalAtom.GeneratePossibleMatches
+        yield return previousGroupMatch.Concat(remainderMatch);
+      }
+
+      noMatch:
+      previousGroupMatch.RevertToBookmark();
     }
 
     public RegexCapturingGroupChoices Group

@@ -9,7 +9,7 @@ namespace RegexCrossword
   /// </summary>
   public class RevertibleCharSetString : CharSetString
   {
-    private List<CharSet> _bookmarkedChars;
+    private Stack<List<CharSet>> _bookmarks = new Stack<List<CharSet>>();
 
     public RevertibleCharSetString(IEnumerable<CharSet> chars)
       : base(chars)
@@ -18,27 +18,20 @@ namespace RegexCrossword
 
     public void Bookmark()
     {
-      if (_bookmarkedChars != null)
-      {
-        throw new InvalidOperationException("The string is already bookmarked");
-      }
-      _bookmarkedChars = this.Select(c => c.Clone()).ToList();
+      var bookmarkedChars = this.Select(c => c.Clone()).ToList();
+      _bookmarks.Push(bookmarkedChars);
     }
 
     public void RevertToBookmark()
     {
-      if (_bookmarkedChars == null)
-      {
-        throw new InvalidOperationException("The string is not bookmarked");
-      }
-      foreach (var pair in _bookmarkedChars.ZipSameLength(this))
+      var bookmarkedChars = _bookmarks.Pop();
+      foreach (var pair in bookmarkedChars.ZipSameLength(this))
       {
         var old = pair.Item1;
         var curr = pair.Item2;
 
         curr.CopyStateFrom(old);
       }
-      _bookmarkedChars = null;
     }
 
     public static RevertibleCharSetString Parse(string regexStyleFormat)

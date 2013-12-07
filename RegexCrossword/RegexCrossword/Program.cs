@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using RegexCrossword.HexRegex;
 
@@ -16,6 +17,7 @@ namespace RegexCrossword
 
     private static void Solve(string name, HexRegexCrossword puzzle)
     {
+      var sw = Stopwatch.StartNew();
       try
       {
         puzzle.Solve();
@@ -30,6 +32,9 @@ namespace RegexCrossword
       File.WriteAllText(
         string.Format("{0}/solved.html", name),
         templ.TransformText());
+
+      Console.WriteLine("Done in {0}ms", sw.ElapsedMilliseconds);
+      Console.ReadLine();
     }
   }
 }

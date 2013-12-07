@@ -77,5 +77,34 @@ namespace RegexCrosswordTests.regex
       Assert.IsFalse(regex.AddConstraints(str));
       Assert.AreEqual("..ABCD......", str.ToString());
     }
+
+    [TestMethod]
+    public void TestMultipleBackReferences()
+    {
+      var regex = new Regex(@"(.)C\1X\1");
+      var str = CharSetString.Parse(".C.X.");
+      Assert.IsFalse(regex.AddConstraints(str));
+
+      str = CharSetString.Parse(".C.X[AB]");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("[AB]C[AB]X[AB]", str.ToString());
+
+      str = CharSetString.Parse(".C[AB]X.");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("[AB]C[AB]X[AB]", str.ToString());
+
+      str = CharSetString.Parse(".C[AB]XB");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("BCBXB", str.ToString());
+    }
+
+    [TestMethod]
+    public void TestBackReference()
+    {
+      var regex = new Regex(@"(...?)\1*");
+      var str = CharSetString.Parse("OREOR[EO][OR][OR][ER]ORE");
+      Assert.IsTrue(regex.AddConstraints(str));
+      Assert.AreEqual("OREOREOREORE", str.ToString());
+    }
   }
 }

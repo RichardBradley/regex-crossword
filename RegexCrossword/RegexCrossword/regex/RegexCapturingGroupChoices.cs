@@ -12,10 +12,10 @@ namespace RegexCrossword.regex
     public List<List<RegexAtom>> Choices;
 
     /// <summary>
-    /// The possible strings which were matched the last time that this group
-    /// was matched
+    /// The string which is currently matched by this group.
+    /// Only valid during the enumeration of GeneratePossibleMatches
     /// </summary>
-    public List<RevertibleCharSetString> PossibleMatches = new List<RevertibleCharSetString>();
+    public RevertibleCharSetString CurrentMatch = null;
 
     public RegexCapturingGroupChoices()
     {
@@ -70,7 +70,10 @@ namespace RegexCrossword.regex
     /// </param>
     public override IEnumerable<CharSetString> GeneratePossibleMatches(int charIdx, CharSetString currentConstraints)
     {
-      PossibleMatches.Clear();
+      if (CurrentMatch != null)
+      {
+        throw new InvalidOperationException("There is already a match in progress");
+      }
       foreach (var choice in Choices)
       {
         var first = choice.First();
@@ -80,7 +83,7 @@ namespace RegexCrossword.regex
           // to a RevertibleCharSetString
           var choiceMatch = new RevertibleCharSetString(choiceMatchGen);
 
-          PossibleMatches.Add(choiceMatch);
+          CurrentMatch = choiceMatch;
           foreach (var remainderMatch in 
             Next.GeneratePossibleMatches(
               charIdx + choiceMatch.Length,
@@ -88,6 +91,7 @@ namespace RegexCrossword.regex
           {
             yield return choiceMatch.Concat(remainderMatch);
           }
+          CurrentMatch = null;
         }
       }
     }

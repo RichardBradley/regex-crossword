@@ -13,9 +13,18 @@ namespace RegexCrossword.regex
       foreach (var previousGroupMatch in Group.PossibleMatches)
       {
         // Is the groupMatch applicable here?
-        var groupMatchHere = previousGroupMatch.Clone();
+        //
+        // The constraints here retrospectively modify the earlier match -- any matching string
+        // must match both here and before, i.e.
+        // a regex like "(.)\1" applied to ".A" must become "AA"
+        //
+        // We bookmark the previous match, so that we can put things back how we found them
+        // after iterating over this possible path.
+
+        previousGroupMatch.Bookmark();
+
         var i = 0;
-        foreach (var groupMatchChar in groupMatchHere)
+        foreach (var groupMatchChar in previousGroupMatch)
         {
           if (charIdx + i >= currentConstraints.Length)
           {
@@ -34,13 +43,18 @@ namespace RegexCrossword.regex
 
         foreach (var remainderMatch in
           Next.GeneratePossibleMatches(
-            charIdx + groupMatchHere.Length,
+            charIdx + previousGroupMatch.Length,
             currentConstraints))
         {
-          yield return groupMatchHere.Concat(remainderMatch);
+          // The value returned here is valid only briefly: we will reuse the
+          // same strings in the next element.
+          // See comments on RegexNonTerminalAtom.GeneratePossibleMatches
+          yield return previousGroupMatch.Concat(remainderMatch);
         }
+
+      nextPreviousGroupMatch:
+        previousGroupMatch.RevertToBookmark();
       }
-      nextPreviousGroupMatch:;
     }
 
     public RegexCapturingGroupChoices Group

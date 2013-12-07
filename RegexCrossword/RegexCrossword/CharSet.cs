@@ -179,5 +179,14 @@ namespace RegexCrossword
     {
       return new CharSet {Chars = new SortedSet<char>(Chars), IsInclusive = IsInclusive};
     }
+
+    /// <summary>
+    /// Copies the state of 'other' into this charset
+    /// </summary>
+    public void CopyStateFrom(CharSet other)
+    {
+      IsInclusive = other.IsInclusive;
+      Chars = new SortedSet<char>(other.Chars);
+    }
   }
 }

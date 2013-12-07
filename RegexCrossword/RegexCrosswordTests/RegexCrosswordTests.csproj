@@ -45,8 +45,10 @@
     <Compile Include="HexRegex\HexRegexCrosswordTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="regex\PrettyPrintingTest.cs" />
+    <Compile Include="regex\RegexBackReferenceTest.cs" />
     <Compile Include="regex\RegexRepetitionModifierTest.cs" />
     <Compile Include="regex\RegexTest.cs" />
+    <Compile Include="RevertibleCharSetStringTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RegexCrossword\RegexCrossword.csproj">

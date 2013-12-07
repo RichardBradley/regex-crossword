@@ -61,8 +61,6 @@ namespace RegexCrosswordTests.regex
 
     /// <summary>
     /// This test examines one bugged case in detail
-    /// 
-    /// 
     /// </summary>
     [TestMethod]
     public void TestAddConstraints5()
@@ -94,66 +92,6 @@ namespace RegexCrosswordTests.regex
       Assert.IsTrue(regex.AddConstraints(str));
 
       Assert.AreEqual("[EIN][DNT][^X][^X][^X][^X][^X]", str.ToString());
-    }
-
-    [TestMethod]
-    public void TestBackReferences1()
-    {
-      var regex = new Regex(@"(ABC)\1");
-      var str = CharSetString.Parse("ABC...");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABCABC", str.ToString());
-
-      str = CharSetString.Parse("ABCA..");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABCABC", str.ToString());
-
-      str = CharSetString.Parse("ABCB..");
-      ExceptionAssert.AssertThrows<CharSet.EmptyIntersectionException>(() =>
-        regex.AddConstraints(str));
-    }
-
-    [TestMethod]
-    public void TestBackReferences2()
-    {
-      var regex = new Regex(@"(...?)\1*");
-      var str = CharSetString.Parse("ABC...");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABCABC", str.ToString());
-
-      str = CharSetString.Parse("AB....");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("AB.[AB][AB].", str.ToString());
-
-      str = CharSetString.Parse("ABA...");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABA[AB][AB][AB]", str.ToString());
-    }
-
-    [TestMethod]
-    public void TestBackReferences3()
-    {
-      var regex = new Regex(@".*(.)(.)(.)(.)\4\3\2\1.*");
-      var str = CharSetString.Parse("ABCD....");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABCDDCBA", str.ToString());
-
-      // This is an interesting one: we can see here that the match
-      // must be: ABCDECBAE.
-      // ... but our current implementation of backrefs cannot back-propagate
-      // the constraints in the later use of the group to the earlier match
-      // of the group.
-      // To support this, we'd need to completely rework the match chain,
-      // as it is currently based on constant prefixes modified by multiple varying
-      // suffixes.
-      str = CharSetString.Parse("ABCDE...ABC..");
-      Assert.IsTrue(regex.AddConstraints(str));
-      Assert.AreEqual("ABCDE...ABCE.", str.ToString());
-
-      // Not enough info here to deduce anything
-      str = CharSetString.Parse("..ABCD......");
-      Assert.IsFalse(regex.AddConstraints(str));
-      Assert.AreEqual("..ABCD......", str.ToString());
     }
 
     [TestMethod]

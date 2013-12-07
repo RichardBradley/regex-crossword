@@ -15,7 +15,7 @@ namespace RegexCrossword.regex
     /// The possible strings which were matched the last time that this group
     /// was matched
     /// </summary>
-    public List<CharSetString> PossibleMatches = new List<CharSetString>(); 
+    public List<RevertibleCharSetString> PossibleMatches = new List<RevertibleCharSetString>();
 
     public RegexCapturingGroupChoices()
     {
@@ -74,8 +74,12 @@ namespace RegexCrossword.regex
       foreach (var choice in Choices)
       {
         var first = choice.First();
-        foreach (var choiceMatch in first.GeneratePossibleMatches(charIdx, currentConstraints))
+        foreach (var choiceMatchGen in first.GeneratePossibleMatches(charIdx, currentConstraints))
         {
+          // choiceMatch may be modified later on (see RegexBackReference), so we promote it
+          // to a RevertibleCharSetString
+          var choiceMatch = new RevertibleCharSetString(choiceMatchGen);
+
           PossibleMatches.Add(choiceMatch);
           foreach (var remainderMatch in 
             Next.GeneratePossibleMatches(

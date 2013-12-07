@@ -21,12 +21,15 @@ This was inspired by the hexagonal regular expression crossword from the MIT Mys
 
 [Watch this program solve the puzzle here](http://bradders.org/regex-crossword/).
 
+The MIT Mystery Hunt 2013 web pages are at:
+
 * http://web.mit.edu/puzzle/www/2013/
 * http://web.mit.edu/puzzle/www/2013/coinheist.com/rubik/a_regular_crossword/index.html
 * http://web.mit.edu/puzzle/www/2013/coinheist.com/rubik/a_regular_crossword/grid.pdf
 
-Reblogged at:
+People blogged about this crossword at:
 
 * http://games.slashdot.org/story/13/02/13/2346253/can-you-do-the-regular-expression-crossword
 * http://www.i-programmer.info/news/144-graphics-and-games/5450-can-you-do-the-regular-expression-crossword.html
+
 

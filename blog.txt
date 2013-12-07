@@ -2,7 +2,7 @@ TODO: write up this project...
 
 h1. Regex crossword
 
-This is the first in a series of blog posts exploring the Regex Crossword by qq which swept the internet recently.
+This is the first in a series of blog posts exploring the Regex Crossword from the MIT Mystery Hunt 2013 which swept the internet.
 
 It's a good opportunity to have an in depth look at regular expressions and finite automata. By the end of the series, we will have written a program to solve the crossword (and perhaps to generate new crosswords in a similar style).
 

@@ -1,3 +1,5 @@
+TODO: write up this project...
+
 h1. Regex crossword
 
 This is the first in a series of blog posts exploring the Regex Crossword by qq which swept the internet recently.
@@ -15,6 +17,8 @@ Take the top left hex, as an example: it is constrained by three regexes:
 
 Now (1) doesn't constrain us at all, but (2) shows it must be N, E or I, and (3) shows the same.
 
+TODO: better example with cascading update
+
 To make our solver, we will need:
  1. A way to track which letter remain a possibility for each hex
  2. A way to derive these constraints, given a regex
@@ -26,3 +30,4 @@ h1. Generating possible inputs from a regex
 A "regex" or "regular expression" is a finite state machine. It can be used as both a "matcher", to evaulate whether a given input is acceptable to the state machine and conversely as a "generator".
 
 To do this, we'll need a way to apply 
+

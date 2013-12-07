@@ -12,7 +12,6 @@ namespace RegexCrossword
       Solve(
         "MITMysteryHunt2013",
         HexRegexCrossword.MITMysteryHunt2013());
-      //Console.ReadLine();
     }
 
     private static void Solve(string name, HexRegexCrossword puzzle)
@@ -34,7 +33,6 @@ namespace RegexCrossword
         templ.TransformText());
 
       Console.WriteLine("Done in {0}ms", sw.ElapsedMilliseconds);
-      Console.ReadLine();
     }
   }
 }
